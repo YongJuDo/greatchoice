@@ -7,7 +7,7 @@ class Category(models.Model):
 
 class Product(models.Model):
     title = models.CharField(max_length=50)
-    category = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
     content = models.TextField()
     photo = models.ImageField(blank=True, upload_to='product_images/')
 
@@ -15,7 +15,7 @@ class Review(models.Model):
     title = models.CharField(max_length=20)
     score = models.IntegerField()
     content = models.TextField()
-    product = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
     photo = models.ImageField(blank=True, upload_to='review_images/')
     like_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='like_reviews')
-    created_at = models.DateTimeField(auto_now_add=False)
+    created_at = models.DateTimeField(auto_now_add=True)
