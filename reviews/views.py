@@ -50,10 +50,17 @@ def product_create(request):
     return render(request, 'reviews/create.html', context)
 
 @login_required
-def delete(request, product_pk):
+def product_delete(request, product_pk):
     product = Product.objects.get(pk=product_pk)
     if request.user == Product.user:
         product.delete()
+    return redirect('reviews:index')
+
+@login_required
+def review_delete(request, review_pk):
+    review = Review.objects.get(pk=review_pk)
+    if request.user == review.user or request.user.is_superuser:
+        review.delete()
     return redirect('reviews:index')
 
 @login_required
