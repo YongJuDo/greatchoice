@@ -6,3 +6,7 @@ def index_redirect(request):
 
 def index(request):
     return render(request, 'reviews/index.html')
+
+def category(request):
+    return render(request, 'reviews/category.html')
+

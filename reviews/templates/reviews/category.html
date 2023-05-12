@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head %}
+<!-- CSS 파일 로드 -->
+<link rel="stylesheet" href="{% static 'style.css' %}">
+{% endblock %}
+
+{% block body %}
+<div class="category_container">
+    <div class="category_title">
+        <a href="category">휴대폰</a>
+    </div>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 w-1/2">
+        <div>
+            <img class="h-auto max-w-full rounded-lg" src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image.jpg" alt="">
+            <p class="product_list">아이폰 14 Pro</p>
+        </div>
+        <div>
+            <img class="h-auto max-w-full rounded-lg" src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-1.jpg" alt="">
+            <p class="product_list">아이폰 14 Pro</p>
+        </div>
+        <div>
+            <img class="h-auto max-w-full rounded-lg" src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-2.jpg" alt="">
+            <p class="product_list">아이폰 14 Pro</p>
+        </div>
+        <div>
+            <img class="h-auto max-w-full rounded-lg" src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-3.jpg" alt="">
+            <p class="product_list">아이폰 14 Pro</p>
+        </div>
+    </div>
+</div>
+
+{% block js%}
+    <script src="{% static 'script.js' %}"></script>
+{% endblock js %}
+
+{% endblock body %}
