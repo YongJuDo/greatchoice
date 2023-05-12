@@ -27,14 +27,14 @@
           <a href="#">마이페이지</a>
         </div>
         <div class="mx-4 text-white">
-          <a href="#">로그아웃</a>
+          <a href="{% url 'accounts:logout' %}">로그아웃</a>
         </div>
       {% else %}
         <div class="mx-4 text-white">
-          <a href="#">로그인</a>
+          <a href="{% url 'accounts:login' %}">로그인</a>
         </div>
         <div class="mx-4 text-white">
-          <a href="#">회원가입</a>
+          <a href="{% url 'accounts:signup' %}">회원가입</a>
         </div>
       {% endif %}
     </div>
