@@ -1,3 +1,4 @@
+/* base.html */
 @font-face {
   font-family: 'Dovemayo_gothic';
   src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2302@1.1/Dovemayo_gothic.woff2') format('woff2');
@@ -25,3 +26,71 @@ footer {
   height: 150px;
   background-color: #e9eaed;
 }
+
+
+/* index.html */
+
+.index_container {
+  display: flex;
+  justify-content: center;
+}
+
+.main_carousel_img {
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+}
+
+.category_buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
+}
+
+.category_button {
+  text-align: center;
+  font-size: 1rem;
+  padding: 0.625rem 1.25rem;
+  margin-right: 1.25rem;
+  border-radius: 30px;
+  background-color: #fff;
+  border-color: none;
+  box-shadow: none;
+}
+
+.category_button.active {
+  color: #1d4ed8;
+  background-color: #fff;
+  border-color: #1d4ed8;
+  box-shadow: 0 0 0 2px rgba(29, 78, 216, 0.5);
+}
+
+.category_button:hover {
+  box-shadow: 0 0 0 2px rgba(209, 213, 219, 0.5);
+  border-color: #d1d5db;
+}
+
+.category_container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: 0.625rem;
+  margin-bottom: 2.5rem;
+}
+
+.category_title {
+  width: 50%;
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  text-align: left;
+}
+
+.product_list {
+  text-align: center;
+  margin-top: 0.625rem;
+}
+/* index.html */
