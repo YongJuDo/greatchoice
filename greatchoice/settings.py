@@ -47,6 +47,20 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 ]
 
+AUTHENTICATION_BACKENDS = [
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
+SOCIALACCOUNT_PROVIDERS = {
+    'kakao': {
+        'APP': {
+            'client_id': '2b32ed18d6b9e74e75b2070ed420a053',
+            'secret': 'bpxhxbfjCDmyaNIddzJBNvvSqzvWKDSJ',
+            'key': ''
+        }
+    }
+}
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',

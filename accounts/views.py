@@ -49,5 +49,5 @@ def delete(request):
     auth_logout(request)
     return redirect('reviews:index')
 
-def mypage(request):
-    return render(request, 'accounts/mypage.html')
+def profile(request):
+    return render(request, 'accounts/profile.html')

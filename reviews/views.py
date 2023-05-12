@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from .models import Product , Review
-from .forms import ProductForm, ReviewForm ,CategoryForm
+from .forms import ProductForm, ReviewForm
 
 # Create your views here.
 def index_redirect(request):
