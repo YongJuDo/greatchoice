@@ -59,7 +59,7 @@ def product_delete(request, product_pk):
 @login_required
 def review_delete(request, review_pk):
     review = Review.objects.get(pk=review_pk)
-    if request.user == review.user or request.user.is_superuser:
+    if request.user == review.user :
         review.delete()
     return redirect('reviews:index')
 
