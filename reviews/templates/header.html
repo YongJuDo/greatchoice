@@ -31,6 +31,9 @@
         </div> {% endcomment %}
       {% comment %} {% else %} {% endcomment %}
       
+      {% if request.user.is_authenticated %}
+      <a href="{% url 'accounts:logout' %}">로그아웃</a>
+      {% endif %}
         <div class="mx-4 text-white">
           <a href="{% provider_login_url 'kakao' %}">
           <i class="fas fa-comment"></i>
