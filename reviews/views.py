@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from .models import Product , Review
-from .forms import ProductForm, ReviewForm ,CategoryForm
+from .forms import ProductForm, ReviewForm
 
 # Create your views here.
 def index_redirect(request):
@@ -59,7 +59,7 @@ def product_delete(request, product_pk):
 @login_required
 def review_delete(request, review_pk):
     review = Review.objects.get(pk=review_pk)
-    if request.user == review.user or request.user.is_superuser:
+    if request.user == review.user :
         review.delete()
     return redirect('reviews:index')
 
