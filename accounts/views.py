@@ -44,7 +44,7 @@ def signup(request):
         if form.is_valid():
             user = form.save()
             auth_login(request, user)
-            return redirect('reviews:index')
+            return redirect('reviews:index') 
     else:
         form = CustomUserCreationForm()
     context = {
@@ -91,3 +91,5 @@ def profile(request):
         'is_kakao_connected': is_kakao_connected
     }
     return render(request, 'accounts/profile.html', context)
+ 
+ 
