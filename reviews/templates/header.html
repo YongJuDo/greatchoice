@@ -1,4 +1,5 @@
 {% load static %}
+{% load socialaccount %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -20,11 +21,17 @@
         </a>
       </div>
       <div class="grow text-center">
-        <input type="text" id="search-navbar" class="w-5/6 p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-slate-300 focus:border-slate-300" placeholder="🔍 상품명을 검색하세요.">
+        <form method="GET" action="{% url 'reviews:search' %}">
+          <input type="text" id="search-navbar" class="w-5/6 p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-slate-300 focus:border-slate-300" placeholder="🔍 상품명을 검색하세요." name="query" value="{{ query }}">
+        </form>
       </div>
       {% if request.user.is_authenticated %}
         <div class="mx-4 text-white">
-          <a href="{% url 'accounts:mypage' request.user.username %}">마이페이지</a>
+
+          <a href="{% url 'accounts:mypage' request.user.username %}">내 페이지</a>
+
+          <a href="{% url 'accounts:profile' %}">마이페이지</a>
+
         </div>
         <div class="mx-4 text-white">
           <a href="{% url 'accounts:logout' %}">로그아웃</a>
