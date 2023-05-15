@@ -19,6 +19,22 @@ def kakao_disconnect(request):
 
     return redirect('reviews:index')
 
+def basic_login(request):
+    if request.user.is_authenticated:
+        return redirect('reviews:index')
+    
+    if request.method == 'POST':
+        form = CustomAuthenticationForm(request, request.POST)
+        if form.is_valid():
+            auth_login(request, form.get_user())
+            return redirect('reviews:index')
+    else:
+        form = CustomAuthenticationForm()
+    context = {
+        'form': form,
+    }
+    return render(request, 'accounts/login.html', context)
+
 def login(request):
     if request.user.is_authenticated:
         return redirect('reviews:index')
@@ -35,7 +51,29 @@ def login(request):
     }
     return render(request, 'accounts/login.html', context)
 
+@login_required
+def basic_logout(request):
+    auth_logout(request)
+    return redirect('reviews:index')
+
 def signup(request):
+    if request.user.is_authenticated:
+        return redirect('reviews:index')
+
+    if request.method == 'POST':
+        form = CustomUserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            auth_login(request, user)
+            return redirect('reviews:index') 
+    else:
+        form = CustomUserCreationForm()
+    context = {
+        'form': form,
+    }
+    return render(request, 'accounts/signup.html', context)
+
+def basic_signup(request):
     if request.user.is_authenticated:
         return redirect('reviews:index')
 
@@ -91,5 +129,4 @@ def profile(request):
         'is_kakao_connected': is_kakao_connected
     }
     return render(request, 'accounts/profile.html', context)
- 
  
