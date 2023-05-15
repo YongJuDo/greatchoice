@@ -9,6 +9,7 @@ class Product(models.Model):
 
 
 class Review(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     title = models.CharField(max_length=20)
     score = models.IntegerField()
     content = models.TextField()
