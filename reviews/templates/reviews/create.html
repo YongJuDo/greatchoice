@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head %}
+<!-- CSS 파일 로드 -->
+<link rel="stylesheet" href="{% static 'style.css' %}">
+{% endblock %}
+
+{% block body %}
+
+<div class="create_container">
+    <div class="create_card">
+        <img class="create_img" src="{{ product.photo }}" alt="이미지 없음">
+        <div class="create_text">
+            <strong><p class="create_brand">{{ product.brand }}</p></strong>
+            <p class="create_title">{{ product.title }}</p>
+        </div>
+    </div>
+    <div class="create_form_container">
+        <form action="{% url 'reviews:create' product.data_id %}" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            {% for field in review_form %}
+                <p class="content_form">{{ field }}</p>
+            {% endfor %}
+            <div class="review_sumbit">
+                <input type="submit" value='리뷰쓰기'>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% block js%}
+    <script src="{% static 'script.js' %}"></script>
+{% endblock js %}
+
+{% endblock body %}

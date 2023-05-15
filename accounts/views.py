@@ -120,6 +120,7 @@ def follow(request, user_pk):
             person.followers.add(request.user)    
     return redirect('accounts:mypage', person.username)
 
+
 @login_required
 def profile(request, username):
     user = request.user
@@ -133,4 +134,3 @@ def profile(request, username):
         'person': person,
     }
     return render(request, 'accounts/profile.html', context)
- 

@@ -3,8 +3,6 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from .models import Product , Review
 from .forms import ProductForm, ReviewForm
-from .models import Product, Review
-from .forms import ProductForm, ReviewForm
 import requests
 from bs4 import BeautifulSoup
 
@@ -21,7 +19,7 @@ def index(request):
     products_ranking = []
     for item in soup.select('.li_inner')[:10]:
         product = Product()
-        product.product_id = item.select_one('a.img-block')['href'].split('?')[0].split('/')[-1]
+        product.data_id = item.select_one('a.img-block')['href'].split('?')[0].split('/')[-1]
         product.brand = item.select('.article_info > p > a')[0].text.strip()
         product.title = item.select('.article_info > p > a')[1].contents[-1].strip()
         product.photo = item.select('.lazyload')[0]['data-original']
@@ -57,7 +55,7 @@ def search(request):
         product.brand = item.select('.article_info > p > a')[0].text.strip()
         product.title = item.select('.article_info > p > a')[1].contents[-1].strip()
         product.photo = item.select('.lazyload')[0]['data-original']
-        product.product_id = item.select_one('[data-bh-content-no]')['data-bh-content-no']
+        product.data_id = item.select_one('[data-bh-content-no]')['data-bh-content-no']
         products_search.append(product)
 
     Product.objects.all().delete()
@@ -91,7 +89,7 @@ def category(request, category_type):
     products_category = []
     for item in soup.select('#goods_list .li_inner')[:20]:
         product = Product()
-        product.product_id = item.select_one('a.img-block')['href'].split('?')[0].split('/')[-1]
+        product.data_id = item.select_one('a.img-block')['href'].split('?')[0].split('/')[-1]
         product.brand = item.select('.article_info > p > a')[0].text.strip()
         product.title = item.select('.article_info > p > a')[1].contents[-1].strip()
         product.photo = item.select('.lazyload')[0]['data-original']
@@ -121,21 +119,30 @@ def detail(request, product_pk):
     return render(request, 'reviews/detail.html', context)
 
 
-@login_required
-def product_create(request):
+# @login_required
+def create(request, data_id):
+    product = Product.objects.get(data_id=data_id)
     if request.method == 'POST':
-        form = ProductForm(request.POST)
-        if form.is_valid():
-            product = form.save(commit=False)
-            product.user = request.user
-            product.save()
-            return redirect('reviews:detail', product.pk)
+        review_form = ReviewForm(request.POST, request.FILES)
+        if review_form.is_valid():
+            review = review_form.save(commit=False)
+            review.title = product.title
+            review.brand = product.brand
+            review.photo = product.photo
+            review.review_product_id = product.data_id
+            review.user = request.user
+            review.product = product
+            review.save()
+            return redirect('reviews:index')
     else:
-        form = ProductForm()
+        review_form = ReviewForm()
+    
     context = {
-        'form': form,
+        'review_form': review_form,
+        'product': product,
     }
     return render(request, 'reviews/create.html', context)
+
 
 
 @login_required
@@ -190,20 +197,3 @@ def review_update(request, product_pk, review_pk):
         'review': review,
     }
     return render(request, 'reviews/update.html', context)
-
-
-@login_required
-def review_create(request, article_pk):
-    product = Product.objects.get(pk=article_pk)
-    review_form = ReviewForm(request.POST)
-    if review_form.is_valid():
-        review = review_form.save(commit=False)
-        review.product = product
-        review.user = request.user
-        review.save()
-        return redirect('reviews:detail', product.pk)
-    context = {
-        'product': product,
-        'review_form': review_form,
-    }
-    return render(request, 'reviews/detail.html', context)

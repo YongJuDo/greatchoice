@@ -62,15 +62,16 @@
         </div>
         <div class="grid grid-cols-2 md:grid-cols-5 gap-4 w-1/2">
             {% for product in products_ranking %}
-            <div>
-                <img src="{{ product.photo }}" alt="이미지 없음">
-                <strong><p>{{ product.brand }}</p></strong>
-                <p class="product_title">{{ product.title }}</p>
-            </div>
+            <a href="{% url 'reviews:create' product.data_id %}">
+                <div>
+                    <img src="{{ product.photo }}" alt="이미지 없음">
+                    <strong><p>{{ product.brand }}</p></strong>
+                    <p class="product_title">{{ product.title }}</p>
+                </div>
+            </a>
             {% endfor %}
         </div>
     </div>
-    
 
 {% block js%}
     <script src="{% static 'script.js' %}"></script>
