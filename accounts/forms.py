@@ -62,39 +62,3 @@ class CustomUserCreationForm(UserCreationForm):
     class Meta(UserCreationForm):
         model = get_user_model()
         fields = ('username', 'password', 'password_confirm',)
-
-class KakaoUserCreationForm(UserCreationForm):
-    kakao_user_id = forms.CharField(required=True)
-    username = forms.CharField(
-        required=True,
-        label='아이디',
-        widget=forms.TextInput(
-            attrs={
-                'id': "floating_username",
-                'class': 'block w-full py-2.5 px-0 text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:border-blue-600 peer',
-                'placeholder': " "
-        })
-    )
-    password1 = forms.CharField(
-        required=True,
-        label='비밀번호',
-        widget=forms.PasswordInput(
-            attrs={
-                'id': "floating_password",
-                'class': 'block w-full py-2.5 px-0 text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:border-blue-600 peer',
-                'placeholder': " "
-        })
-    )
-    password2 = forms.CharField(
-        required=True,
-        label='비밀번호',
-        widget=forms.PasswordInput(
-            attrs={
-                'id': "floating_repeat_password",
-                'class': 'block w-full py-2.5 px-0 text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:border-blue-600 peer',
-                'placeholder': " "
-        })
-    )
-    class Meta(UserCreationForm):
-        model = get_user_model()
-        fields = ('username', 'password', 'password_confirm',)
