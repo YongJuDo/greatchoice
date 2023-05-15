@@ -14,11 +14,11 @@
     </div>
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 w-7/12 rounded-10">
         {% for product in products_search %}
-        <div class="search_card">
-            <img class="search_img" src="{{ product.photo }}" alt="이미지 없음">
+        <a href="{% url 'reviews:product_detail' product.data_id %}" class="search_card">
+            <img class="search_img rounded-lg w-56 h-56" src="{{ product.photo }}" alt="이미지 없음">
             <strong><p>{{ product.brand }}</p></strong>
             <p class="product_title">{{ product.title }}</p>
-        </div>
+        </a>
         {% endfor %}
     </div>
 </div>
