@@ -34,14 +34,14 @@
 
         </div>
         <div class="mx-4 text-white">
-          <a href="{% url 'accounts:logout' %}">로그아웃</a>
+          <a href="{% url 'accounts:basic_logout' %}">로그아웃</a>
         </div>
       {% else %}
         <div class="mx-4 text-white">
-          <a href="{% url 'accounts:login' %}">로그인</a>
+          <a href="{% url 'accounts:basic_login' %}">로그인</a>
         </div>
         <div class="mx-4 text-white">
-          <a href="{% url 'accounts:signup' %}">회원가입</a>
+          <a href="{% url 'accounts:basic_signup' %}">회원가입</a>
         </div>
       {% endif %}
     </div>
