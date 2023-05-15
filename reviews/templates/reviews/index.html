@@ -62,7 +62,7 @@
         </div>
         <div class="grid grid-cols-2 md:grid-cols-5 gap-4 w-1/2">
             {% for product in products_ranking %}
-            <a href="{% url 'reviews:create' product.data_id %}">
+            <a href="{% url 'reviews:product_detail' product.data_id %}">
                 <div>
                     <img src="{{ product.photo }}" alt="이미지 없음">
                     <strong><p>{{ product.brand }}</p></strong>
