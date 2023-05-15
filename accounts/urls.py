@@ -23,6 +23,7 @@ app_name = 'accounts'
 urlpatterns = [
     path('social/signup/', views.signup, name='signup'),
     path('basic_signup/', views.basic_signup, name='basic_signup'),
+    path('signup/', views.signup, name='signup'),
     path('kakao/disconnect/', views.kakao_disconnect, name='kakao_disconnect'),
     path('delete/', views.delete, name='delete'),
     path('basic_login/', views.basic_login, name='basic_login'),
@@ -31,6 +32,6 @@ urlpatterns = [
     path('logout/', views.logout, name='logout'),
     path('follow/<int:user_pk>', views.follow, name='follow'),
     path('mypage/<str:username>', views.mypage, name='mypage'),
-    path('profile/', views.profile, name='profile'),
+    path('profile/<str:username>', views.profile, name='profile'),
 ]
 

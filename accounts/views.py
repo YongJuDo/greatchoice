@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
 from allauth.socialaccount.models import SocialAccount
 from django.views import View
-
+from .models import CustomUser
 
 # Create your views here.
 def kakao_disconnect(request):
@@ -121,12 +121,16 @@ def follow(request, user_pk):
     return redirect('accounts:mypage', person.username)
 
 @login_required
-def profile(request):
-    # 카카오 연결 여부 확인
+def profile(request, username):
+    user = request.user
+    is_kakao_user = user.is_kakao_user
+    User = get_user_model()
+    person = User.objects.get(username=username)
     is_kakao_connected = SocialAccount.objects.filter(user=request.user, provider='kakao').exists()
-
     context = {
-        'is_kakao_connected': is_kakao_connected
+        'is_kakao_user': is_kakao_user,
+        'is_kakao_connected': is_kakao_connected,
+        'person': person,
     }
     return render(request, 'accounts/profile.html', context)
  
