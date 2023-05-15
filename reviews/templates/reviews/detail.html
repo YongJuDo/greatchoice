@@ -24,7 +24,7 @@
         <button id="review-tab" data-tabs-target="#review" type="button" role="tab" aria-controls="review" aria-selected="true" class="inline-block p-4 text-blue-600 rounded-tl-lg hover:bg-gray-100">리뷰 목록</button>
       </li>
       <li class="mr-2">
-        <a href="{% url 'reviews:review_create' product.product_id %}">
+        <a href="{% url 'reviews:create' product.data_id %}">
           <button type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center mr-2">+ 리뷰 쓰기</button>
         </a>
       </li>

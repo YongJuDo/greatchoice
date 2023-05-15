@@ -108,8 +108,8 @@ def category(request, category_type):
     return render(request, 'reviews/category.html', context)
 
 
-def product_detail(request, product_id):
-    product = Product.objects.get(product_id=product_id)
+def product_detail(request, data_id):
+    product = Product.objects.get(data_id=data_id)
     product_form = ProductForm()
     reviews = product.review_set.all()
     average_score = product.review_set.all().aggregate(Avg('score'))
