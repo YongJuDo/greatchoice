@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login as auth_login, logout as auth_logout
-from .forms import CustomAuthenticationForm, CustomUserCreationForm
+from .forms import CustomAuthenticationForm, CustomUserCreationForm , KakaoUserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
 from allauth.socialaccount.models import SocialAccount
@@ -78,11 +78,14 @@ def basic_signup(request):
         return redirect('reviews:index')
 
     if request.method == 'POST':
-        form = CustomUserCreationForm(request.POST)
+        if 'kakao_user_id' in request.POST:
+            form = KakaoUserCreationForm(request.POST)
+        else:
+            form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
             auth_login(request, user)
-            return redirect('reviews:index') 
+            return redirect('reviews:index')
     else:
         form = CustomUserCreationForm()
     context = {
