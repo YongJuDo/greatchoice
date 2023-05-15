@@ -1,10 +1,12 @@
 from django.db import models
 from django.conf import settings
 
-# Create your models here.
 class Product(models.Model):
     title = models.CharField(max_length=50)
+    brand = models.CharField(max_length=50)
     photo = models.ImageField(blank=True, upload_to='product_images/')
+    product_id = models.CharField(max_length=50)
+
 
 class Review(models.Model):
     title = models.CharField(max_length=20)
