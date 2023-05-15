@@ -3,8 +3,10 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login as auth_login, logout as auth_logout
 from .forms import CustomAuthenticationForm, CustomUserCreationForm
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import get_user_model
 from allauth.socialaccount.models import SocialAccount
 from django.views import View
+
 
 # Create your views here.
 def kakao_disconnect(request):
@@ -60,6 +62,25 @@ def delete(request):
     request.user.delete()
     auth_logout(request)
     return redirect('reviews:index')
+
+def mypage(request, username):
+    User = get_user_model()
+    person = User.objects.get(username=username)
+    context = {
+        'person': person,
+    }
+    return render(request, 'accounts/mypage.html', context)
+
+@login_required
+def follow(request, user_pk):
+    User = get_user_model()
+    person = User.objects.get(pk=user_pk)
+    if person != request.user:
+        if request.user in person.followers.all():
+            person.followers.remove(request.user)
+        else:
+            person.followers.add(request.user)    
+    return redirect('accounts:mypage', person.username)
 
 @login_required
 def profile(request):
