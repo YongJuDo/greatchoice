@@ -3,6 +3,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login as auth_login, logout as auth_logout
 from .forms import CustomAuthenticationForm, CustomUserCreationForm
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import get_user_model
 
 # Create your views here.
 def login(request):
@@ -49,5 +50,21 @@ def delete(request):
     auth_logout(request)
     return redirect('reviews:index')
 
-def mypage(request):
-    return render(request, 'accounts/mypage.html')
+def mypage(request, username):
+    User = get_user_model()
+    person = User.objects.get(username=username)
+    context = {
+        'person': person,
+    }
+    return render(request, 'accounts/mypage.html', context)
+
+@login_required
+def follow(request, user_pk):
+    User = get_user_model()
+    person = User.objects.get(pk=user_pk)
+    if person != request.user:
+        if request.user in person.followers.all():
+            person.followers.remove(request.user)
+        else:
+            person.followers.add(request.user)    
+    return redirect('accounts:mypage', person.username)
