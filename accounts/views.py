@@ -15,7 +15,7 @@ def kakao_disconnect(request):
     # 계정 삭제 후 리다이렉트할 URL
     redirect_url = 'reviews:index'
 
-    return redirect(redirect_url)
+    return redirect('reviews:index')
 
 def login(request):
     if request.user.is_authenticated:
