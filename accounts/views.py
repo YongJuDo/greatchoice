@@ -123,12 +123,10 @@ def follow(request, user_pk):
 @login_required
 def profile(request, username):
     user = request.user
-    is_kakao_user = user.is_kakao_user
     User = get_user_model()
     person = User.objects.get(username=username)
     is_kakao_connected = SocialAccount.objects.filter(user=request.user, provider='kakao').exists()
     context = {
-        'is_kakao_user': is_kakao_user,
         'is_kakao_connected': is_kakao_connected,
         'person': person,
     }
