@@ -12,11 +12,10 @@ from .models import CustomUser
 def kakao_disconnect(request):
     if request.user.is_authenticated:
         # 사용자의 카카오 소셜 계정 연결 끊기
-        SocialAccount.objects.filter(user=request.user, provider='kakao').delete()
-
+        SocialAccount.objects.filter(user=request.user, provider='kakao').delete() 
+        # auth_logout(request)
     # 계정 삭제 후 리다이렉트할 URL
-    redirect_url = 'reviews:index'
-
+        redirect_url = 'reviews:index'
     return redirect('reviews:index')
 
 def basic_login(request):
