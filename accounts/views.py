@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login as auth_login, logout as auth_logout
-from .forms import CustomAuthenticationForm, CustomUserCreationForm 
+from .forms import CustomAuthenticationForm, CustomUserCreationForm , CustomUserChangeForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
 from allauth.socialaccount.models import SocialAccount
@@ -72,6 +72,21 @@ def signup(request):
     }
     return render(request, 'accounts/signup.html', context)
 
+@login_required
+def update(request):
+    if request.method == 'POST':
+        form = CustomUserChangeForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            auth_login(request, user)
+            return redirect('reviews:profile') 
+    else:
+        form = CustomUserChangeForm()
+    context = {
+        'form': form,
+    }
+    return render(request, 'accounts/update.html', context)
+
 def basic_signup(request):
     if request.user.is_authenticated:
         return redirect('reviews:index')
@@ -131,3 +146,4 @@ def profile(request, username):
         'person': person,
     }
     return render(request, 'accounts/profile.html', context)
+
