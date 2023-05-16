@@ -70,9 +70,11 @@
                 {% for review in person.review_set.all %}
                 <div class="myreviews">
                   <a href="{% url 'reviews:product_detail' review.review_product_id %}">
+                    {% if review.review_photo %}
                     <div class="max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
                       <img class="rounded-lg w-50 h-60" src="{{ review.review_photo.url }}" alt="이미지 없음">
                     </div>
+                    {% endif %}
                     <div class="mypage_text">
                       <div class="mypage_review_title">
                         <p class="mypage_title">{{ review.review_title }}</p>
