@@ -64,12 +64,62 @@
       </li>
     </ul>
     <div id="defaultTabContent">
-      <div class="hidden p-4 bg-white rounded-lg" id="review" role="tabpanel" aria-labelledby="review-tab">
-
+        <div class="hidden p-4 bg-white rounded-lg" id="review" role="tabpanel" aria-labelledby="review-tab">
+          <div class="mypage_myreview">
+            {% if person.review_set.all %}
+                {% for review in person.review_set.all %}
+                <div class="myreviews">
+                  <a href="{% url 'reviews:product_detail' review.review_product_id %}">
+                    <div class="max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+                      <img class="rounded-lg w-50 h-60" src="{{ review.review_photo.url }}" alt="이미지 없음">
+                    </div>
+                    <div class="mypage_text">
+                      <div class="mypage_review_title">
+                        <p class="mypage_title">{{ review.review_title }}</p>
+                        <div class="mypage_score">
+                          <svg aria-hidden="true" class="w-7 h-7 text-yellow-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><title>Rating star</title><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                          <p class="mypage_score_text">{{ review.score }}</p>
+                        </div>
+                      </div>
+                      <p class="mypage_content">{{ review.content }}</p>
+                    </div>
+                  </a>
+                </div>
+                {% endfor %}
+              </div>
+            {% else %}
+              <p>내가 쓴 리뷰가 없습니다.</p>
+            {% endif %}
+        </div>
       </div>
       <div class="hidden p-4 bg-white rounded-lg" id="like" role="tabpanel" aria-labelledby="like-tab">
-
+        <div class="mypage_myreview">
+          {% if person.like_reviews.all %}
+              {% for like_review in person.like_reviews.all %}
+              <div class="myreviews">
+                <a href="{% url 'reviews:product_detail' like_review.review_product_id %}">
+                  <div class="max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+                    <img class="rounded-lg w-50 h-60" src="{{ like_review.review_photo.url }}" alt="이미지 없음">
+                  </div>
+                  <div class="mypage_text">
+                    <div class="mypage_review_title">
+                      <p class="mypage_title">{{ like_review.review_title }}</p>
+                      <div class="mypage_score">
+                        <svg aria-hidden="true" class="w-7 h-7 text-yellow-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><title>Rating star</title><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                        <p class="mypage_score_text">{{ like_review.score }}</p>
+                      </div>
+                    </div>
+                    <p class="mypage_content">{{ like_review.content }}</p>
+                  </div>
+                </a>
+              </div>
+              {% endfor %}
+            </div>
+          {% else %}
+            <p>내가 쓴 리뷰가 없습니다.</p>
+          {% endif %}
       </div>
+
       <div class="hidden p-4 bg-white rounded-lg" id="following" role="tabpanel" aria-labelledby="following-tab">
         <div class="flow-root">
           <ul role="list" class="divide-y divide-gray-200">
@@ -80,7 +130,7 @@
                     <img class="w-8 h-8 rounded-full" src="https://picsum.photos/200" alt="">
                   </div>
                   <div class="flex-1 min-w-0">
-                    <a href="{% url 'accounts:mypage' one.username %}">
+                    <a href="{% url 'accounts:profile' one.username %}">
                       <p class="text-sm font-medium text-gray-900 truncate">
                       {{ one.username }}
                       </p>
@@ -119,7 +169,7 @@
                     <img class="w-8 h-8 rounded-full" src="https://picsum.photos/200" alt="">
                   </div>
                   <div class="flex-1 min-w-0">
-                    <a href="{% url 'accounts:mypage' one.username %}">
+                    <a href="{% url 'accounts:profile' one.username %}">
                       <p class="text-sm font-medium text-gray-900 truncate">
                       {{ one.username }}
                       </p>

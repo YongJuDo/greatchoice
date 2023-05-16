@@ -1,12 +1,20 @@
-// function change_btn(e) {
-//     var btns = document.querySelectorAll(".category_button");
-//     btns.forEach(function(btn) {
-//         if(e.currentTarget == btn) {
-//             btn.classList.add("active");
-//         }
-//         else {
-//             btn.classList.remove("active");
-//         }
-//     });
-//     console.log( e.currentTarget );
-// }
+// document.addEventListener('DOMContentLoaded', () => {
+//     const likeForm = document.querySelector('.likeForm');
+//     const likeCount = document.querySelector('.likeCount');
+//     const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+// likeForm.forEach((likeForm) => {
+//     likeForm.addEventListener('submit', (event) => {
+//         event.preventDefault();
+
+//         const reviewPk = likeButton.dataset.reviewPk;
+
+//         axios({
+//         method: 'post',
+//         url: `/reviews/review_like/${reviewPk}/`,
+//         headers: { 'X-CSRFToken': csrftoken },
+//         })
+//         .then((response) => {
+//             const likeCountText = response.data.like_users_count;
+
+//             likeCount.textContent = likeCountText;

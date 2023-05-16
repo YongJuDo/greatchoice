@@ -8,21 +8,29 @@
 
 {% block body %}
 
+<div class="category_buttons">
+    <button onclick="location.href='{% url 'reviews:category' category_type='top' %}'" class="category_button active" id="top" type="button">상의</button>
+    <button onclick="location.href='{% url 'reviews:category' category_type='outerwear' %}'" class="category_button" id="outerwear" type="button">아우터</button>
+    <button onclick="location.href='{% url 'reviews:category' category_type='bottoms' %}'" class="category_button" id="bottoms" type="button">하의</button>
+    <button onclick="location.href='{% url 'reviews:category' category_type='shoes' %}'" class="category_button" id="shoes" type="button">신발</button>
+    {% comment %} <button onclick="change_btn(event)" class="category_button" id="ramen" type="shoes">신발</button> {% endcomment %}
+</div>
+
 <!-- 캐러셀 -->
 <div class="index_container">
-    <div id="default-carousel" class="relative w-1/2" data-carousel="slide">
-        <div class="relative h-56 overflow-hidden rounded-lg md:h-96">
+    <div id="default-carousel" class="relative w-1/2" data-carousel="slide" style="margin: 1.5rem;">
+        <div class="relative overflow-hidden rounded-lg" style="height: 31rem;">
             <!-- Item 1 -->
             <div class="hidden duration-700 ease-in-out" data-carousel-item>
-                <img src="{% static 'img/galaxy_23.png' %}" class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 main_carousel_img" alt="...">
+                <img src="{% static 'img/showcase_1.jpg' %}" class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 main_carousel_img" alt="...">
             </div>
             <!-- Item 2 -->
             <div class="hidden duration-700 ease-in-out" data-carousel-item>
-                <img src="{% static 'img/galaxy_23.png' %}" class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 main_carousel_img" alt="...">
+                <img src="{% static 'img/showcase_2.jpg' %}" class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 main_carousel_img" alt="...">
             </div>
             <!-- Item 3 -->
             <div class="hidden duration-700 ease-in-out" data-carousel-item>
-                <img src="{% static 'img/galaxy_23.png' %}" class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 main_carousel_img" alt="...">
+                <img src="{% static 'img/showcase_3.jpg' %}" class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 main_carousel_img" alt="...">
             </div>
         </div>
         <!-- Slider indicators -->
@@ -48,14 +56,6 @@
     </div>
 
     <!-- 갤러리 / 주요 상품 리스트 -->
-    <div class="category_buttons">
-        <button onclick="location.href='{% url 'reviews:category' category_type='top' %}'" class="category_button active" id="top" type="button">상의</button>
-        <button onclick="location.href='{% url 'reviews:category' category_type='outerwear' %}'" class="category_button" id="outerwear" type="button">아우터</button>
-        <button onclick="location.href='{% url 'reviews:category' category_type='bottoms' %}'" class="category_button" id="bottoms" type="button">하의</button>
-        <button onclick="location.href='{% url 'reviews:category' category_type='shoes' %}'" class="category_button" id="shoes" type="button">신발</button>
-        {% comment %} <button onclick="change_btn(event)" class="category_button" id="ramen" type="shoes">신발</button> {% endcomment %}
-    </div>
-    <div>
     <div class="category_container">
         <div class="ranking_title">
             <p>실시간 랭킹</p>
