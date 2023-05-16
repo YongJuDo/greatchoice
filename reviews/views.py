@@ -6,6 +6,7 @@ from .forms import ProductForm, ReviewForm, CommentForm
 import requests
 from bs4 import BeautifulSoup
 from django.db.models import Avg
+from django.core.paginator import Paginator
 
 
 # Create your views here.
@@ -111,11 +112,16 @@ def category(request, category_type):
 
 def product_detail(request, data_id):
     product = Product.objects.get(data_id=data_id)
-    reviews = Review.objects.filter(review_product_id=data_id)
+    reviews = Review.objects.filter(review_product_id=data_id).order_by('-pk')
+    review_count = len(reviews)
+    page = request.GET.get('page', '1')
+    paginator = Paginator(reviews, 3)
+    page_obj = paginator.get_page(page)
     average_score = reviews.aggregate(Avg('score'))
     context = {
         'product': product,
-        'reviews': reviews,
+        'reviews': page_obj,
+        'review_count': review_count,
         'average_score': average_score['score__avg'],
     }
     return render(request, 'reviews/detail.html', context)
@@ -161,42 +167,43 @@ def review_delete(request, review_pk):
     return redirect('reviews:index')
 
 
-@login_required
-def product_update(request, data_id):
-    product = Product.objects.get(pk=data_id)
-    if request.user == product.user:
+# @login_required
+# def product_update(request, data_id):
+#     product = Product.objects.get(pk=data_id)
+#     if request.user == product.user:
+#         if request.method == 'POST':
+#             form = ProductForm(request.POST, instance=product)
+#             if form.is_valid():
+#                 form.save()
+#                 return redirect('reviews:detail', product.pk)
+#         else:
+#             form = ProductForm(instance=product)
+#     else:
+#         return redirect('reviews:index')
+#     context = {
+#         'product': product,
+#         'form': form,
+#     }
+#     return render(request, 'reviews/update.html', context)
+
+
+def review_update(request, review_pk):
+    review = Review.objects.get(pk=review_pk)
+    if request.user == review.user:
         if request.method == 'POST':
-            form = ProductForm(request.POST, instance=product)
+            form = ReviewForm(request.POST, instance=review)
             if form.is_valid():
                 form.save()
-                return redirect('reviews:detail', product.pk)
+                return redirect('reviews:review_detail', review.pk)
         else:
-            form = ProductForm(instance=product)
+            form = ReviewForm(instance=review)
     else:
-        return redirect('reviews:index')
-    context = {
-        'product': product,
-        'form': form,
-    }
-    return render(request, 'reviews/update.html', context)
-
-
-def review_update(request, data_id, review_pk):
-    review = Review.objects.get(pk=review_pk)
-    
-    if request.method == 'POST':
-        form = ReviewForm(request.POST, instance=review)
-        if form.is_valid():
-            form.save()
-            return redirect('reviews:detail', data_id)
-    else:
-        form = ReviewForm(instance=review)
-    
+        return redirect('reviews:review_detail', review.pk)
     context = {
         'form': form,
         'review': review,
     }
-    return render(request, 'reviews/update.html', context)
+    return render(request, 'reviews/review_update.html', context)
 
 
 @login_required
@@ -210,7 +217,7 @@ def review_like(request, review_pk):
 
 
 def review_detail(request, review_pk):
-    comments = Comment.objects.filter(review=review_pk)
+    comments = Comment.objects.filter(review=review_pk).order_by('-pk')
     review = Review.objects.get(pk=review_pk)
     context = {
         'review': review,
@@ -225,7 +232,7 @@ def comment_create(request, review_pk):
     review = Review.objects.get(pk=review_pk)
     if request.method == "POST":
         form = CommentForm(request.POST)
-        if form.is_valid:
+        if form.is_valid():
             comment = form.save(commit=False)
             comment.user = request.user
             comment.review = review
@@ -240,5 +247,13 @@ def comment_like(request, review_pk, comment_pk):
         comment.like_users.remove(request.user)
     else:
         comment.like_users.add(request.user)
+    return redirect('reviews:review_detail', review_pk)
+
+
+@login_required
+def comment_delete(request, review_pk, comment_pk):
+    comment = Comment.objects.get(pk=comment_pk)
+    if request.user == comment.user:
+        comment.delete()
     return redirect('reviews:review_detail', review_pk)
 

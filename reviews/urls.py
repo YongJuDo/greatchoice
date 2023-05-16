@@ -11,11 +11,12 @@ urlpatterns = [
     path('product_detail/<int:data_id>', views.product_detail, name='product_detail'),
     path('detail/<int:data_id>/delete/', views.product_delete, name='product_delete'),
     path('create/<int:data_id>/', views.create, name='create'),
-    path('update/<int:data_id>/', views.product_update, name='product_update'),
+    # path('update/<int:data_id>/', views.product_update, name='product_update'),
     path('review_delete/<int:review_pk>/', views.product_delete, name='review_delete'),
     path('review_update/<int:review_pk>/', views.review_update, name='review_update'),
     path('review_detail/<int:review_pk>/', views.review_detail, name='review_detail'),
     path('review_like/<int:review_pk>/', views.review_like, name='review_like'),
     path('comment_create/<int:review_pk>/', views.comment_create, name='comment_create'),
     path('comment_like/<int:review_pk>/<int:comment_pk>', views.comment_like, name='comment_like'),
+    path('comment_delete/<int:review_pk>/<int:comment_pk>', views.comment_delete, name='comment_delete'),
 ]
