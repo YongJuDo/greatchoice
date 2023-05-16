@@ -87,7 +87,6 @@ def update(request):
     }
     return render(request, 'accounts/update.html', context)
 
-
 def basic_signup(request):
     if request.user.is_authenticated:
         return redirect('reviews:index')
