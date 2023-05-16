@@ -135,7 +135,7 @@ def follow(request, user_pk):
     return redirect('accounts:mypage', person.username)
 
 
-@login_required
+
 def profile(request, username):
     user = request.user
     User = get_user_model()

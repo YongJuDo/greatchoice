@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
-from .models import Product , Review
+from .models import Product, Review, Comment
 from .forms import ProductForm, ReviewForm, CommentForm
 import requests
 from bs4 import BeautifulSoup
@@ -200,36 +200,45 @@ def review_update(request, data_id, review_pk):
 
 
 @login_required
-def review_create(request, data_id):
-    product = Product.objects.get(data_id=data_id)
-    review_form = ReviewForm(request.POST)
-    if review_form.is_valid():
-        review = review_form.save(commit=False)
-        review.product = product
-        review.user = request.user
-        review.save()
-        return redirect('reviews:detail', product.pk)
-    context = {
-        'product': product,
-        'review_form': review_form,
-    }
-    return render(request, 'reviews/detail.html', context)
-
-
-@login_required
-def review_like(request, data_id, review_pk):
+def review_like(request, review_pk):
     review = Review.objects.get(pk=review_pk)
     if request.user in review.like_users.all():
         review.like_users.remove(request.user)
     else:
         review.like_users.add(request.user)
-    return redirect('reviews:product_detail', data_id)
+    return redirect('reviews:review_detail', review.pk)
 
 
-def review_detail(request, data_id, review_pk):
+def review_detail(request, review_pk):
+    comments = Comment.objects.filter(review=review_pk)
     review = Review.objects.get(pk=review_pk)
     context = {
         'review': review,
-        'CommentForm': CommentForm,
+        'form': CommentForm,
+        'comments': comments,
     }
     return render(request, 'reviews/review_detail.html', context)
+
+
+@login_required
+def comment_create(request, review_pk):
+    review = Review.objects.get(pk=review_pk)
+    if request.method == "POST":
+        form = CommentForm(request.POST)
+        if form.is_valid:
+            comment = form.save(commit=False)
+            comment.user = request.user
+            comment.review = review
+            comment.save()
+            return redirect('reviews:review_detail', review.pk)
+
+
+@login_required
+def comment_like(request, review_pk, comment_pk):
+    comment = Comment.objects.get(pk=comment_pk)
+    if request.user in comment.like_users.all():
+        comment.like_users.remove(request.user)
+    else:
+        comment.like_users.add(request.user)
+    return redirect('reviews:review_detail', review_pk)
+

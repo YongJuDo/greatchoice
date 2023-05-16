@@ -4,7 +4,7 @@
   <div class="flex flex-col w-1/4 h-1/2 bg-white border border-gray-200 rounded-lg shadow mr-5 p-5">
     <img class="w-5/6 self-center rounded-lg mb-2" src="{{ product.photo }}" alt="product image" />
     <h5 class="text-base text-gray-500 truncate">{{ product.brand }}</h5>
-    <a href="https://www.musinsa.com/app/goods/{{ product.product_id}}" target="_blank">
+    <a href="https://www.musinsa.com/app/goods/{{ product.data_id}}" target="_blank">
       <h5 class="text-xl font-semibold tracking-tight text-gray-900">{{ product.title }}</h5>
     </a>
     <div class="flex items-center">
@@ -32,7 +32,7 @@
     <div id="defaultTabContent">
       <div class="hidden p-4 bg-white rounded-lg" id="review" role="tabpanel" aria-labelledby="review-tab">
         {% for review in reviews %}
-          <a href="{% url 'reviews:review_detail' review.review_product_id review.pk %}">
+          <a href="{% url 'reviews:review_detail' review.pk %}">
             <article>
               <div class="flex items-center mb-4 space-x-4">
                 <img class="w-10 h-10 rounded-full" src="https://picsum.photos/200" alt="">
@@ -47,7 +47,7 @@
               <p class="mb-2 text-gray-500">{{ review.content }}</p>
               <aside>
                 <div class="flex flex-row items-center">
-                  <form action="{% url 'reviews:review_like' review.review_product_id review.pk%}">
+                  <form action="{% url 'reviews:review_like' review.pk%}">
                     {% csrf_token %}
                     {% if request.user in review.like_users.all %}
                       <button type="submit">
