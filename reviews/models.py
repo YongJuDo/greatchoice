@@ -13,7 +13,6 @@ class Review(models.Model):
     brand = models.CharField(max_length=50)
     photo = models.CharField(max_length=255)
     review_product_id = models.IntegerField()
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     review_title = models.CharField(max_length=50)
     content = models.TextField()
@@ -21,3 +20,11 @@ class Review(models.Model):
     score = models.IntegerField()
     like_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='like_reviews')
     created_at = models.DateTimeField(auto_now_add=True)
+
+
+class Comment(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    review = models.ForeignKey(Review, on_delete=models.CASCADE)
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    like_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='like_comments')
