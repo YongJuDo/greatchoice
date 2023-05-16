@@ -2,10 +2,10 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from .models import Product , Review
-from .forms import ProductForm, ReviewForm
+from .forms import ProductForm, ReviewForm, CommentForm
 import requests
 from bs4 import BeautifulSoup
-from django.db.models import Avg, Count
+from django.db.models import Avg
 
 # Create your views here.
 def index_redirect(request):
@@ -110,12 +110,10 @@ def category(request, category_type):
 
 def product_detail(request, data_id):
     product = Product.objects.get(data_id=data_id)
-    product_form = ProductForm()
-    reviews = product.review_set.all()
-    average_score = product.review_set.all().aggregate(Avg('score'))
+    reviews = Review.objects.filter(review_product_id=data_id)
+    average_score = reviews.aggregate(Avg('score'))
     context = {
         'product': product,
-        'product_form': product_form,
         'reviews': reviews,
         'average_score': average_score['score__avg'],
     }
@@ -147,10 +145,9 @@ def create(request, data_id):
     return render(request, 'reviews/create.html', context)
 
 
-
 @login_required
-def product_delete(request, product_id):
-    product = Product.objects.get(pk=product_id)
+def product_delete(request, data_id):
+    product = Product.objects.get(pk=data_id)
     if request.user == Product.user:
         product.delete()
     return redirect('reviews:index')
@@ -165,8 +162,8 @@ def review_delete(request, review_pk):
 
 
 @login_required
-def product_update(request, product_id):
-    product = Product.objects.get(pk=product_id)
+def product_update(request, data_id):
+    product = Product.objects.get(pk=data_id)
     if request.user == product.user:
         if request.method == 'POST':
             form = ProductForm(request.POST, instance=product)
@@ -184,14 +181,14 @@ def product_update(request, product_id):
     return render(request, 'reviews/update.html', context)
 
 
-def review_update(request, product_id, review_pk):
+def review_update(request, data_id, review_pk):
     review = Review.objects.get(pk=review_pk)
     
     if request.method == 'POST':
         form = ReviewForm(request.POST, instance=review)
         if form.is_valid():
             form.save()
-            return redirect('reviews:detail', product_id)
+            return redirect('reviews:detail', data_id)
     else:
         form = ReviewForm(instance=review)
     
@@ -201,9 +198,10 @@ def review_update(request, product_id, review_pk):
     }
     return render(request, 'reviews/update.html', context)
 
+
 @login_required
-def review_create(request, product_id):
-    product = Product.objects.get(product_id=product_id)
+def review_create(request, data_id):
+    product = Product.objects.get(data_id=data_id)
     review_form = ReviewForm(request.POST)
     if review_form.is_valid():
         review = review_form.save(commit=False)
@@ -217,11 +215,21 @@ def review_create(request, product_id):
     }
     return render(request, 'reviews/detail.html', context)
 
+
 @login_required
-def review_like(request, product_id, review_pk):
+def review_like(request, data_id, review_pk):
     review = Review.objects.get(pk=review_pk)
     if request.user in review.like_users.all():
         review.like_users.remove(request.user)
     else:
         review.like_users.add(request.user)
-    return redirect('reviews:product_detail', product_id)
+    return redirect('reviews:product_detail', data_id)
+
+
+def review_detail(request, data_id, review_pk):
+    review = Review.objects.get(pk=review_pk)
+    context = {
+        'review': review,
+        'CommentForm': CommentForm,
+    }
+    return render(request, 'reviews/review_detail.html', context)
