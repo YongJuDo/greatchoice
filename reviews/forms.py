@@ -39,15 +39,23 @@ class ReviewForm(forms.ModelForm):
     review_photo = forms.ImageField(
         label='이미지',
         label_suffix='',
+        required = False,
         widget=forms.FileInput(
             attrs={
                 'placeholder': '이미지',
-                'required': False
             }
         )
     )
-
-
+    score = forms.IntegerField(
+        label='평점',
+        label_suffix='',
+        widget=forms.NumberInput(
+            attrs={
+                'class': 'bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500',
+                'placeholder': '평점',
+            }
+        )
+    )
 class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
