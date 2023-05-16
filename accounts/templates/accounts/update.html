@@ -2,10 +2,13 @@
 {% load static %}
 {% block body %}
 <div class="card m-2 p-2" style="width:50%;">
-    <img src="..." class="card-img-top" alt="...">
+    <img src="{{ user.profile_image.url }}" class="card-img-top" alt=''>
     <div class="card-body">
-      {{form.as_p}}
-      <button type=submit class="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg px-5 py-2.5 text-center">수정</button>
+        <form action="{% url 'accounts:update' %} " method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{form.as_p}}
+        <button type='submit' class="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg px-5 py-2.5 text-center">수정</button>
+        </form>
     </div>
   </div>
 {% endblock body %}
