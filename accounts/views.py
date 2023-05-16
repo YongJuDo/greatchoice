@@ -74,19 +74,20 @@ def signup(request):
 
 @login_required
 def update(request):
+    User = get_user_model()
+    person = User.objects.get(username=request.user.username)
     if request.method == 'POST':
-        form = CustomUserChangeForm(request.POST)
+        form = CustomUserChangeForm(request.POST, request.FILES, instance=request.user)
         if form.is_valid():
             user = form.save()
             auth_login(request, user)
-            return redirect('reviews:profile') 
+            return redirect('accounts:profile', user.username) 
     else:
         form = CustomUserChangeForm()
     context = {
         'form': form,
     }
     return render(request, 'accounts/update.html', context)
-
 
 def basic_signup(request):
     if request.user.is_authenticated:
