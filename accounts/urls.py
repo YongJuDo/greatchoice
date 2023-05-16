@@ -31,7 +31,6 @@ urlpatterns = [
     path('logout/', views.logout, name='logout'),
     path('update/', views.update, name='update'),
     path('follow/<int:user_pk>', views.follow, name='follow'),
-    path('mypage/<str:username>', views.mypage, name='mypage'),
     path('profile/<str:username>', views.profile, name='profile'),
 ]
 

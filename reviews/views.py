@@ -7,6 +7,7 @@ import requests
 from bs4 import BeautifulSoup
 from django.db.models import Avg
 
+
 # Create your views here.
 def index_redirect(request):
     return redirect('reviews:index')
@@ -88,7 +89,7 @@ def category(request, category_type):
     soup = BeautifulSoup(res.text, 'html.parser')
     
     products_category = []
-    for item in soup.select('#goods_list .li_inner')[:20]:
+    for item in soup.select('#goods_list .li_inner')[:36]:
         product = Product()
         product.data_id = item.select_one('a.img-block')['href'].split('?')[0].split('/')[-1]
         product.brand = item.select('.article_info > p > a')[0].text.strip()
@@ -120,7 +121,7 @@ def product_detail(request, data_id):
     return render(request, 'reviews/detail.html', context)
 
 
-# @login_required
+@login_required
 def create(request, data_id):
     product = Product.objects.get(data_id=data_id)
     if request.method == 'POST':
@@ -132,9 +133,8 @@ def create(request, data_id):
             review.photo = product.photo
             review.review_product_id = product.data_id
             review.user = request.user
-            review.product = product
             review.save()
-            return redirect('reviews:index')
+            return redirect('reviews:product_detail', data_id)
     else:
         review_form = ReviewForm()
     
