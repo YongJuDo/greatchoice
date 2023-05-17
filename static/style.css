@@ -1,9 +1,9 @@
 /* base.html */
-@font-face {
-  font-family: 'Dovemayo_gothic';
-  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2302@1.1/Dovemayo_gothic.woff2') format('woff2');
-  font-weight: normal;
-  font-style: normal;
+@import url(http://fonts.googleapis.com/earlyaccess/notosanskr.css);
+
+body, th, td, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6,
+	pre, form, fieldset, textarea, blockquote, span, * {
+	font-family: 'Noto Sans KR', sans-serif;
 }
 
 html, body {

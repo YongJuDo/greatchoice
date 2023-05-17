@@ -1,16 +1,17 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block body %}
 <div class="flex flex-row p-10">
   <!-- 제품정보 -->
-  <div class="flex flex-col w-1/6 h-1/2 bg-white border border-gray-200 rounded-lg shadow mr-5 p-5">
+  <div class="flex flex-col w-1/5 h-1/2 bg-white border border-gray-200 rounded-lg shadow mr-5 p-5">
     {% if product_exists %}
-      <img class="w-5/6 self-center rounded-lg mb-2" src="{{ product.photo }}" alt="product image" />
+      <img class="w-4/5 self-center rounded-lg mb-2" src="{{ product.photo }}" alt="product image" />
       <h5 class="text-base text-gray-500 truncate">{{ product.brand }}</h5>
       <a href="https://www.musinsa.com/app/goods/{{ product.data_id}}" target="_blank">
         <h5 class="text-xl font-semibold tracking-tight text-gray-900">{{ product.title }}</h5>
       </a>
     {% else %}
-      <img class="w-5/6 self-center rounded-lg mb-2" src="{{ review.photo }}" alt="product image" />
+      <img class="w-4/5 self-center rounded-lg mb-2" src="{{ review.photo }}" alt="product image" />
       <h5 class="text-base text-gray-500 truncate">{{ review.brand }}</h5>
       <a href="https://www.musinsa.com/app/goods/{{ review.review_product_id }}" target="_blank">
         <h5 class="text-xl font-semibold tracking-tight text-gray-900">{{ review.title }}</h5>
@@ -31,7 +32,7 @@
   <!-- 리뷰 목록 -->
   <div class="w-full bg-white border border-gray-200 rounded-lg shadow">
     <!-- 상단탭 -->
-    <ul class="flex flex-wrap items-center text-base font-medium text-center text-gray-500 border-b border-gray-200 rounded-t-lg bg-gray-50" id="defaultTab" data-tabs-toggle="#defaultTabContent" role="tablist">
+    <ul class="flex justify-between flex-wrap items-center text-base font-medium text-center text-gray-500 border-b border-gray-200 rounded-t-lg bg-gray-50" id="defaultTab" data-tabs-toggle="#defaultTabContent" role="tablist">
       <li class="mr-2">
         <button id="review-tab" data-tabs-target="#review" type="button" role="tab" aria-controls="review" aria-selected="true" class="inline-block p-4 text-blue-600 rounded-tl-lg hover:bg-gray-100">리뷰({{ review_count }})</button>
       </li>
@@ -41,7 +42,7 @@
               <button button type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center mr-2">+ 리뷰 쓰기</button>
             </a> 
           {% else %}
-            <a href="{% url 'reviews:create' review.review_product_id %}">
+x            <a href="{% url 'reviews:create' review.review_product_id %}">
               <button button type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center mr-2">+ 리뷰 쓰기</button>
             </a> 
           {% endif %}
@@ -52,11 +53,11 @@
       <div class="hidden p-4 bg-white rounded-lg" id="review" role="tabpanel" aria-labelledby="review-tab">
         {% if reviews %}
           {% for review in reviews %}
-          {% with person=review.user %}
+          
             <article>
               <div class="flex justify-between">
                 <div class="flex items-center space-x-4">
-                  <img class="w-10 h-10 rounded-full" src="{{ person.profile_image.url }}" alt=''>
+                  <img class="w-10 h-10 rounded-full" src="{{ user.profile_image.url }}" alt=''>
                   <div class="space-y-1 font-base">
                     <p><a href="{% url 'accounts:profile' review.user.username %}">{{ review.user }}</a><span class="block text-sm text-gray-500">{{ review.created_at|date:"Y-m-d"}}</span></p>
                   </div>
@@ -74,8 +75,10 @@
                   </div>
                   {% if review.review_photo %}
                     <img src="{{ review.review_photo.url }}" alt="리뷰 이미지" class="w-32 h-32 rounded-lg">
-                    {% endif %}
-                    {% endwith %}
+                  {% else %}
+                    <img class="mypage_img w-32 h-32 rounded-lg" src="{% static 'img/noimg.jpg' %}" alt="이미지 없음">
+                  {% endif %}
+                
                 </div>
               </a>
               <aside>
