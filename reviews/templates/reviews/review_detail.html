@@ -175,7 +175,7 @@
       event.preventDefault()
       const reviewId = event.target.dataset.reviewId
       axios({
-        method: "POST",
+        method: 'post',
         url: `/reviews/review_like/${reviewId}/`,
         headers: {'X-CSRFToken': csrftoken,}
       })
