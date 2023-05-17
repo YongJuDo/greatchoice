@@ -7,6 +7,8 @@ from django.contrib.auth import get_user_model
 from allauth.socialaccount.models import SocialAccount
 from django.views import View
 from .models import CustomUser
+from django.core.files import File
+import urllib.request
 
 # Create your views here.
 def kakao_disconnect(request):
@@ -96,7 +98,12 @@ def basic_signup(request):
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST,request.FILES)
         if form.is_valid():
-            user = form.save()
+            user = form.save(commit=False)
+            if not user.profile_image:
+                image_url = 'https://picsum.photos/200'
+                response = urllib.request.urlopen(image_url)
+                user.profile_image.save('default_image.jpg', File(response), save=True)
+            user.save()
             auth_login(request, user)
             return redirect('reviews:index') 
     else:
@@ -105,7 +112,6 @@ def basic_signup(request):
         'form': form,
     }
     return render(request, 'accounts/signup.html', context)
-
 @login_required
 def logout(request):
     auth_logout(request)
@@ -142,3 +148,11 @@ def profile(request, username):
     }
     return render(request, 'accounts/profile.html', context)
 
+def set_default_profile_image(request):
+    user = request.user
+    # 이미지 URL에서 이미지를 가져와서 프로필 이미지로 설정
+    image_url = 'https://picsum.photos/200'
+    response = urllib.request.urlopen(image_url)
+    user.profile_image.save('default_image.jpg', File(response), save=True)
+
+    return redirect('accounts:profile', request.user.username)

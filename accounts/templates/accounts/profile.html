@@ -12,6 +12,9 @@
       <!-- Dropdown menu -->
       <div id="dropdown" class="z-10 hidden text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow w-44">
         <ul class="py-2" aria-labelledby="dropdownButton">
+                <li>
+          <a href="{% url 'accounts:set_default_profile_image' %}" class="block px-4 py-2 text-sm text-black-600 hover:bg-gray-100">기본 이미지로 변경</a>
+        </li>
         <li>
           <a href="{% url 'accounts:update' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">회원정보 수정</a>
         </li>
@@ -24,15 +27,12 @@
           <a href="{% url 'accounts:delete' %}" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100">회원탈퇴</a>
         </li>
         {% endif %}
+
         </ul>
       </div>
     </div>
     <div class="flex flex-col items-center pb-10">
-      {% if person.profile_image  %}
       <img class="w-24 h-24 mb-3 rounded-full shadow-lg" src="{{ person.profile_image.url }}" alt=''>
-      {% else %}
-      <img class="w-24 h-24 mb-3 rounded-full shadow-lg" src="https://picsum.photos/200" alt="#"/>
-      {% endif %}
       <h5 class="mb-1 text-xl font-medium text-gray-900">{{ person.username }}</h5>
       <span class="text-sm text-gray-500">팔로잉 {{ person.followings.all.count }} / 팔로워 {{ person.followers.all.count }}</span>
       {% if request.user != person %}
@@ -146,7 +146,7 @@
               <li class="py-3 sm:py-4">
                 <div class="flex items-center space-x-4">
                   <div class="flex-shrink-0">
-                    <img class="w-8 h-8 rounded-full" src="{{ user.profile_image.url }}" alt="">
+                    <img class="w-24 h-24 mb-3 rounded-full shadow-lg" src="{{ person.profile_image.url }}" alt=''>
                     {% comment %} <img class="w-8 h-8 rounded-full" src="https://picsum.photos/200" alt=""> {% endcomment %}
                   </div>
                   <div class="flex-1 min-w-0">
