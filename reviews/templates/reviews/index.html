@@ -20,18 +20,13 @@
 <div class="index_container">
     <div id="default-carousel" class="relative w-1/2" data-carousel="slide" style="margin: 1.5rem;">
         <div class="relative overflow-hidden rounded-lg" style="height: 31rem;">
-            <!-- Item 1 -->
-            <div class="hidden duration-700 ease-in-out" data-carousel-item>
-                <img src="{% static 'img/showcase_1.jpg' %}" class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 main_carousel_img" alt="...">
-            </div>
-            <!-- Item 2 -->
-            <div class="hidden duration-700 ease-in-out" data-carousel-item>
-                <img src="{% static 'img/showcase_2.jpg' %}" class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 main_carousel_img" alt="...">
-            </div>
-            <!-- Item 3 -->
-            <div class="hidden duration-700 ease-in-out" data-carousel-item>
-                <img src="{% static 'img/showcase_3.jpg' %}" class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 main_carousel_img" alt="...">
-            </div>
+            {% for item in showcase_data %}
+                <div class="hidden duration-700 ease-in-out" data-carousel-item>
+                    <a href="{{ item.link }}">
+                        <img src="{{ item.image }}" class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 main_carousel_img" alt="...">
+                    </a>
+                </div>
+            {% endfor %}
         </div>
         <!-- Slider indicators -->
         <div class="absolute z-30 flex space-x-3 -translate-x-1/2 bottom-5 left-1/2">

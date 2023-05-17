@@ -60,10 +60,10 @@
     <!-- 상단탭 -->
     <ul class="flex flex-wrap text-sm font-medium text-center text-gray-500 border-b border-gray-200 rounded-t-lg bg-gray-50" id="defaultTab" data-tabs-toggle="#defaultTabContent" role="tablist">
       <li class="mr-2">
-        <button id="review-tab" data-tabs-target="#review" type="button" role="tab" aria-controls="review" aria-selected="true" class="inline-block p-4 text-blue-600 rounded-tl-lg hover:bg-gray-100">내가 쓴 리뷰</button>
+        <button id="review-tab" data-tabs-target="#review" type="button" role="tab" aria-controls="review" aria-selected="true" class="inline-block p-4 text-blue-600 rounded-tl-lg hover:bg-gray-100">내가 쓴 리뷰 <span>({{ person.review_set.all|length }})</span></button>
       </li>
       <li class="mr-2">
-        <button id="like-tab" data-tabs-target="#like" type="button" role="tab" aria-controls="like" aria-selected="false" class="inline-block p-4 hover:text-gray-600 hover:bg-gray-100">내가 좋아요한 리뷰</button>
+        <button id="like-tab" data-tabs-target="#like" type="button" role="tab" aria-controls="like" aria-selected="false" class="inline-block p-4 hover:text-gray-600 hover:bg-gray-100">내가 좋아요한 리뷰 <span>({{ person.like_reviews.all|length }})</span></button>
       </li>
       <li class="mr-2">
         <button id="following-tab" data-tabs-target="#following" type="button" role="tab" aria-controls="following" aria-selected="false" class="inline-block p-4 hover:text-gray-600 hover:bg-gray-100">팔로잉 목록</button>
@@ -108,7 +108,7 @@
                           <p>X</p>
                         </button>
                       </form>
-                      <a href="{% url 'reviews:review_update' review.review_product_id %}">수정</a>
+                      <a href="{% url 'reviews:review_update' review.pk %}">수정</a>
                     </div>
                   {% endif %}
                 </a>

@@ -17,6 +17,10 @@
     </div>
   </div>
   <div class="create_form_container">
+        <div class="rating review_rating">
+            <div id="rating-stars"></div>
+            <input type="hidden" id="score-input" name="score" value="0">
+        </div>
     <form action="{% url 'reviews:review_update' review.pk %}" method="POST" enctype="multipart/form-data">
       {% csrf_token %}
       {% for field in form %}
@@ -29,8 +33,22 @@
   </div>
 </div>
 
-{% block js%}
-    <script src="{% static 'script.js' %}"></script>
-{% endblock js %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/rateYo/2.3.2/jquery.rateyo.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/rateYo/2.3.2/jquery.rateyo.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $("#rating-stars").rateYo({
+            starWidth: "25px",
+            spacing: "10px",
+            rating: {{ review.score }},
+            fullStar: true,
+            precision: 1,
+            onSet: function(rating, rateYoInstance) {
+                $("#score-input").val(rating.toFixed(0));
+            }
+        });
+    });    
+</script>
 
 {% endblock body %}
