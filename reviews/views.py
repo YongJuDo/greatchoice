@@ -7,6 +7,7 @@ import requests
 from bs4 import BeautifulSoup
 from django.db.models import Avg
 from django.core.paginator import Paginator
+from django.http import JsonResponse
 
 
 # Create your views here.
@@ -246,9 +247,15 @@ def review_like(request, review_pk):
     review = Review.objects.get(pk=review_pk)
     if request.user in review.like_users.all():
         review.like_users.remove(request.user)
+        review_is_liked = False
     else:
         review.like_users.add(request.user)
-    return redirect('reviews:review_detail', review.pk)
+        review_is_liked = True
+    context = {
+        'review_is_liked': review_is_liked,
+        'review_likes_count': review.like_users.count(),
+    }
+    return JsonResponse(context)
 
 
 def review_detail(request, review_pk):
