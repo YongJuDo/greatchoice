@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from .models import Product, Review, Comment
-from .forms import ProductForm, ReviewForm, CommentForm
+from .forms import ReviewForm, CommentForm
 import requests
 from bs4 import BeautifulSoup
 from django.db.models import Avg
@@ -149,35 +149,37 @@ def product_detail(request, data_id):
 
 @login_required
 def create(request, data_id):
-    if Product.objects.filter(data_id=data_id).exists():
-        product = Product.objects.get(data_id=data_id)
-        product_exists = True
-        selected_review = None
-    else:
-        selected_review = Review.objects.filter(review_product_id=data_id).first()
-        product_exists = False
-        product = None
+    if request.user.is_authenticated:
+        if Product.objects.filter(data_id=data_id).exists():
+            product = Product.objects.get(data_id=data_id)
+            product_exists = True
+            selected_review = None
+        else:
+            selected_review = Review.objects.filter(review_product_id=data_id).first()
+            product_exists = False
+            product = None
 
-    if request.method == 'POST':
-        review_form = ReviewForm(request.POST, request.FILES)
-        if review_form.is_valid():
-            review = review_form.save(commit=False)
-            if Product.objects.filter(data_id=data_id).exists():
-                review.title = product.title
-                review.brand = product.brand
-                review.photo = product.photo
-                review.review_product_id = product.data_id
-            else:
-                review.title = selected_review.title
-                review.brand = selected_review.brand
-                review.photo = selected_review.photo
-                review.review_product_id = selected_review.review_product_id
-            review.user = request.user
-            review.save()
-            return redirect('reviews:product_detail', data_id)
+        if request.method == 'POST':
+            review_form = ReviewForm(request.POST, request.FILES)
+            if review_form.is_valid():
+                review = review_form.save(commit=False)
+                if Product.objects.filter(data_id=data_id).exists():
+                    review.title = product.title
+                    review.brand = product.brand
+                    review.photo = product.photo
+                    review.review_product_id = product.data_id
+                else:
+                    review.title = selected_review.title
+                    review.brand = selected_review.brand
+                    review.photo = selected_review.photo
+                    review.review_product_id = selected_review.review_product_id
+                review.user = request.user
+                review.save()
+                return redirect('reviews:product_detail', data_id)
+        else:
+            review_form = ReviewForm()
     else:
-        review_form = ReviewForm()
-    
+        return redirect('accounts:basic_login')
     context = {
         'review_form': review_form,
         'product': product,
@@ -188,14 +190,6 @@ def create(request, data_id):
 
 
 @login_required
-def product_delete(request, data_id):
-    product = Product.objects.get(pk=data_id)
-    if request.user == Product.user:
-        product.delete()
-    return redirect('reviews:index')
-
-
-@login_required
 def review_delete(request, review_pk):
     review = Review.objects.get(pk=review_pk)
     if request.user == review.user :
@@ -203,26 +197,7 @@ def review_delete(request, review_pk):
     return redirect('reviews:index')
 
 
-# @login_required
-# def product_update(request, data_id):
-#     product = Product.objects.get(pk=data_id)
-#     if request.user == product.user:
-#         if request.method == 'POST':
-#             form = ProductForm(request.POST, instance=product)
-#             if form.is_valid():
-#                 form.save()
-#                 return redirect('reviews:detail', product.pk)
-#         else:
-#             form = ProductForm(instance=product)
-#     else:
-#         return redirect('reviews:index')
-#     context = {
-#         'product': product,
-#         'form': form,
-#     }
-#     return render(request, 'reviews/update.html', context)
-
-
+@login_required
 def review_update(request, review_pk):
     review = Review.objects.get(pk=review_pk)
     if request.user == review.user:

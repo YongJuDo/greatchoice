@@ -3,33 +3,37 @@
 {% load socialaccount %}
 {% block body %}
 <div class="flex flex-row p-10">
+  <!-- 좌측 사용자 정보칸 -->
   <div class="w-1/4 bg-white border border-gray-200 rounded-lg shadow mr-5">
     <div class="flex justify-end px-4 pt-4">
-      <button id="dropdownButton" data-dropdown-toggle="dropdown" class="inline-block text-gray-500 hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 rounded-lg text-sm p-1.5" type="button">
-        <span class="sr-only">Open dropdown</span>
-        <svg class="w-6 h-6" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z"></path></svg>
-      </button>
-      <!-- Dropdown menu -->
-      <div id="dropdown" class="z-10 hidden text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow w-44">
-        <ul class="py-2" aria-labelledby="dropdownButton">
-                <li>
-          <a href="{% url 'accounts:set_default_profile_image' %}" class="block px-4 py-2 text-sm text-black-600 hover:bg-gray-100">기본 이미지로 변경</a>
-        </li>
-        <li>
-          <a href="{% url 'accounts:update' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">회원정보 수정</a>
-        </li>
-        {% if is_kakao_connected %}
-        <li>
-        <a href="{% url 'accounts:kakao_disconnect' %}" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100">카카오 연결 끊기</a>
-        </li>
-        {% else %}
-        <li>
-          <a href="{% url 'accounts:delete' %}" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100">회원탈퇴</a>
-        </li>
-        {% endif %}
-
-        </ul>
-      </div>
+      {% if request.user == person %}
+        <button id="dropdownButton" data-dropdown-toggle="dropdown" class="inline-block text-gray-500 hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 rounded-lg text-sm p-1.5" type="button">
+          <span class="sr-only">Open dropdown</span>
+          <svg class="w-6 h-6" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z"></path></svg>
+        </button>
+        <!-- Dropdown menu -->
+        <div id="dropdown" class="z-10 hidden text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow w-44">
+          <ul class="py-2" aria-labelledby="dropdownButton">
+            <li>
+              <a href="{% url 'accounts:set_default_profile_image' %}" class="block px-4 py-2 text-sm text-black-600 hover:bg-gray-100">기본 이미지로 변경</a>
+            </li>
+            <li>
+              <a href="{% url 'accounts:update' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">회원정보 수정</a>
+            </li>
+            {% if is_kakao_connected %}
+              <li>
+                <a href="{% url 'accounts:kakao_disconnect' %}" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100">카카오 연결 끊기</a>
+              </li>
+            {% else %}
+              <li>
+                <a href="{% url 'accounts:delete' %}" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100">회원탈퇴</a>
+              </li>
+            {% endif %}
+          </ul>
+        </div>
+      {% else %}
+        <div class="inline-block text-gray-500 p-3"></div>
+      {% endif %}
     </div>
     <div class="flex flex-col items-center pb-10">
       <img class="w-24 h-24 mb-3 rounded-full shadow-lg" src="{{ person.profile_image.url }}" alt=''>
@@ -51,8 +55,9 @@
       {% endif %}
     </div>
   </div>
-  
+  <!-- 우측 리뷰, 좋아요, 팔로잉, 팔로워 정보 -->
   <div class="w-full bg-white border border-gray-200 rounded-lg shadow">
+    <!-- 상단탭 -->
     <ul class="flex flex-wrap text-sm font-medium text-center text-gray-500 border-b border-gray-200 rounded-t-lg bg-gray-50" id="defaultTab" data-tabs-toggle="#defaultTabContent" role="tablist">
       <li class="mr-2">
         <button id="review-tab" data-tabs-target="#review" type="button" role="tab" aria-controls="review" aria-selected="true" class="inline-block p-4 text-blue-600 rounded-tl-lg hover:bg-gray-100">내가 쓴 리뷰</button>
@@ -68,59 +73,13 @@
       </li>
     </ul>
     <div id="defaultTabContent">
-        <div class="hidden p-4 bg-white rounded-lg" id="review" role="tabpanel" aria-labelledby="review-tab">
-          <div class="mypage_myreview">
-            {% if person.review_set.all %}
-                {% for review in person.review_set.all %}
-                <div class="myreviews">
-                  <a href="{% url 'reviews:product_detail' review.review_product_id %}">
-                    {% if review.review_photo %}
-                    <div class="mypage_img_container">
-                      <img class="mypage_img rounded-lg" src="{{ review.review_photo.url }}" alt="이미지 없음">
-                    </div>
-                    {% else %}
-                    <div class="mypage_img_container">
-                      <img class="mypage_img rounded-lg" src="{% static 'img/noimg.jpg' %}" alt="이미지 없음">
-                    </div>
-                    {% endif %}
-                    <div class="mypage_text">
-                      <div class="mypage_review_title">
-                        <p class="mypage_title">{{ review.review_title }}</p>
-                        {{ review.created_at|date:"Y-m-d"}}
-                      </div>
-                      <div class="mypage_score">
-                        <svg aria-hidden="true" class="w-6 h-6 text-yellow-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><title>Rating star</title><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
-                        <p class="mypage_score_text">{{ review.score }}</p>
-                      </div>
-                      <p class="mypage_content">{{ review.content }}</p>
-                    </div>
-                    {% if request.user == review.user %}
-                      <div class="mypage_text_funtion">
-                        <form action="{% url 'reviews:review_delete' review.pk %}" method="POST" class="mypage_delete">
-                          {% csrf_token %}
-                          <button type="submit">
-                            <p>X</p>
-                          </button>
-                        </form>
-                        <a href="{% url 'reviews:review_update' review.pk %}">수정</a>
-                      </div>
-                    {% endif %}
-                  </a>
-                </div>
-                <hr class="mypage_div_line">
-                {% endfor %}
-              </div>
-            {% else %}
-              <p>내가 쓴 리뷰가 없습니다.</p>
-            {% endif %}
-        </div>
-      </div>
-      <div class="hidden p-4 bg-white rounded-lg" id="like" role="tabpanel" aria-labelledby="like-tab">
+      <!-- 내가 쓴 리뷰 -->
+      <div class="p-4 bg-white rounded-lg" id="review" role="tabpanel" aria-labelledby="review-tab">
         <div class="mypage_myreview">
-          {% if person.like_reviews.all %}
-              {% for review in person.like_reviews.all %}
+          {% if person.review_set.all %}
+            {% for review in person.review_set.all %}
               <div class="myreviews">
-                <a href="{% url 'reviews:product_detail' review.review_product_id %}">
+                <a href="{% url 'reviews:review_detail' review.pk %}">
                   {% if review.review_photo %}
                   <div class="mypage_img_container">
                     <img class="mypage_img rounded-lg" src="{{ review.review_photo.url }}" alt="이미지 없음">
@@ -129,6 +88,54 @@
                   <div class="mypage_img_container">
                     <img class="mypage_img rounded-lg" src="{% static 'img/noimg.jpg' %}" alt="이미지 없음">
                   </div>
+                  {% endif %}
+                  <div class="mypage_text">
+                    <div class="mypage_review_title">
+                      <p class="mypage_title">{{ review.review_title }}</p>
+                      {{ review.created_at|date:"Y-m-d"}}
+                    </div>
+                    <div class="mypage_score">
+                      <svg aria-hidden="true" class="w-6 h-6 text-yellow-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><title>Rating star</title><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                      <p class="mypage_score_text">{{ review.score }}</p>
+                    </div>
+                    <p class="mypage_content">{{ review.content }}</p>
+                  </div>
+                  {% if request.user == review.user %}
+                    <div class="mypage_text_funtion">
+                      <form action="{% url 'reviews:review_delete' review.pk %}" method="POST" class="mypage_delete">
+                        {% csrf_token %}
+                        <button type="submit">
+                          <p>X</p>
+                        </button>
+                      </form>
+                      <a href="{% url 'reviews:review_update' review.review_product_id %}">수정</a>
+                    </div>
+                  {% endif %}
+                </a>
+              </div>
+              <hr class="mypage_div_line">
+            {% endfor %}
+          {% else %}
+            <p>내가 쓴 리뷰가 없습니다.</p>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- 내가 좋아요한 리뷰 -->
+      <div class="p-4 bg-white rounded-lg" id="like" role="tabpanel" aria-labelledby="like-tab">
+        <div class="mypage_myreview">
+          {% if person.like_reviews.all %}
+            {% for review in person.like_reviews.all %}
+              <div class="myreviews">
+                <a href="{% url 'reviews:review_detail' review.pk %}">
+                  {% if review.review_photo %}
+                    <div class="mypage_img_container">
+                      <img class="mypage_img rounded-lg" src="{{ review.review_photo.url }}" alt="이미지 없음">
+                    </div>
+                  {% else %}
+                    <div class="mypage_img_container">
+                      <img class="mypage_img rounded-lg" src="{% static 'img/noimg.jpg' %}" alt="이미지 없음">
+                    </div>
                   {% endif %}
                   <div class="mypage_text">
                     <div class="mypage_review_title">
@@ -155,21 +162,22 @@
                 </a>
               </div>
               <hr class="mypage_div_line">
-              {% endfor %}
-            </div>
+            {% endfor %}
           {% else %}
-            <p>내가 쓴 리뷰가 없습니다.</p>
+            <p>좋아요 한 리뷰가 없습니다.</p>
           {% endif %}
+        </div>
       </div>
 
-      <div class="hidden p-4 bg-white rounded-lg" id="following" role="tabpanel" aria-labelledby="following-tab">
+      <!-- 팔로잉 목록 -->
+      <div class="p-4 bg-white rounded-lg" id="following" role="tabpanel" aria-labelledby="following-tab">
         <div class="flow-root">
           <ul role="list" class="divide-y divide-gray-200">
             {% for one in person.followings.all %}
-              <li class="py-3 sm:py-4">
+              <li class="py-3">
                 <div class="flex items-center space-x-4">
                   <div class="flex-shrink-0">
-                    <img class="w-24 h-24 mb-3 rounded-full shadow-lg" src="{{ person.profile_image.url }}" alt=''>
+                    <img class="w-24 h-24 mb-3 rounded-full shadow-lg" src="{{ one.profile_image.url }}" alt=''>
                     {% comment %} <img class="w-8 h-8 rounded-full" src="https://picsum.photos/200" alt=""> {% endcomment %}
                   </div>
                   <div class="flex-1 min-w-0">
@@ -202,14 +210,16 @@
           </ul>
         </div>
       </div>
-      <div class="hidden p-4 bg-white rounded-lg" id="follower" role="tabpanel" aria-labelledby="follower-tab">
+
+      <!-- 팔로워 목록 -->
+      <div class="p-4 bg-white rounded-lg" id="follower" role="tabpanel" aria-labelledby="follower-tab">
         <div class="flow-root">
           <ul role="list" class="divide-y divide-gray-200">
             {% for one in person.followers.all %}
-              <li class="py-3 sm:py-4">
+              <li class="py-3">
                 <div class="flex items-center space-x-4">
                   <div class="flex-shrink-0">
-                    <img class="w-8 h-8 rounded-full" src="https://picsum.photos/200" alt="">
+                    <img class="w-24 h-24 mb-3 rounded-full shadow-lg" src="{{ one.profile_image.url }}" alt=''>
                   </div>
                   <div class="flex-1 min-w-0">
                     <a href="{% url 'accounts:profile' one.username %}">
