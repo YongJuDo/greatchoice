@@ -25,16 +25,16 @@
         {% endif %}
     </div>
     <div class="create_form_container">
-        <div class="rating review_rating">
-            <div id="rating-stars"></div>
-            <input type="hidden" id="score-input" name="score" value="0">
-        </div>
         {% if product_exists %}
             <form action="{% url 'reviews:create' product.data_id %}" method="POST" enctype="multipart/form-data">
         {% else %}
             <form action="{% url 'reviews:create' review.review_product_id %}" method="POST" enctype="multipart/form-data">
         {% endif %}
             {% csrf_token %}
+            <div class="rating review_rating">
+                <div id="rating-stars"></div>
+                <input type="hidden" id="score-input" name="score" value="0">
+            </div>
             {% for field in review_form %}
                 <p class="content_form">{{ field }}</p>
             {% endfor %}
