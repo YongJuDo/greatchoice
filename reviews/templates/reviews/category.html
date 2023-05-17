@@ -14,7 +14,7 @@
         <p>{{ category_title }}</p>
     </div> 
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 w-7/12 rounded-10">
-        {% for product in products_category %}
+        {% for product in products %}
         <a href="{% url 'reviews:product_detail' product.data_id %}">
             <img class="rounded-lg w-56 h-56" src="{{ product.photo }}" alt="이미지 없음">
             <strong><p>{{ product.brand }}</p></strong>
@@ -22,6 +22,50 @@
         </a>
         {% endfor %}
     </div>
+
+    {% comment %} 페이지네이션 {% endcomment %}
+    <ul class="pagination justify-content-center pagenation_container">
+        {% if products.has_previous %}
+            <li class="page-item">
+                <a class="page-link page-text" href="?query={{ query }}&page=1">&lt;&lt;</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link page-text" href="?query={{ query }}&page={{ products.previous_page_number }}">&lt;</a>
+            </li>
+        {% else %}
+            <li class="page-item disabled">
+                <a class="page-link page-text" tabindex="-1" aria-disabled="true" href="#">&lt;</a>
+            </li>
+        {% endif %}
+
+        {% for page_number in products.paginator.page_range %}
+            {% if page_number >= products.number|add:-12 and page_number <= products.number|add:12 %}
+                {% if page_number == products.number %}
+                    <li class="page-item active" aria-current="page">
+                    <a class="page-link page-text" href="?query={{ query }}&page={{ page_number }}">{{ page_number }}</a>
+                    </li>
+                {% else %}
+                    <li class="page-item">
+                    <a class="page-link page-text" href="?query={{ query }}&page={{ page_number }}">{{ page_number }}</a>
+                    </li>
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+
+        {% if products.has_next %}
+            <li class="page-item">
+                <a class="page-link page-text" href="?query={{ query }}&page={{ products.next_page_number }}">&gt;</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link page-text" href="?query={{ query }}&page={{ products.paginator.num_pages }}">&gt;&gt;</a>
+            </li>
+        {% else %}
+            <li class="page-item disabled">
+            <a class="page-link page-text" tabindex="-1" aria-disabled="true" href="#">&gt;</a>
+            </li>
+        {% endif %}
+    </ul>
+
 </div>
 
 {% block js%}

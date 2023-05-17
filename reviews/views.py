@@ -32,13 +32,7 @@ def index(request):
 
     Product.objects.bulk_create(products_ranking)
 
-    products = Product.objects.order_by('-pk')
-    per_page = 5
-    paginator = Paginator(products, per_page)
-    page = request.GET.get('page', 1)
-    page_obj = paginator.get_page(page)
     context = {
-        'products': page_obj,
         'products_ranking': products_ranking,
     }
     return render(request,'reviews/index.html', context)
@@ -47,7 +41,7 @@ def index(request):
 def search(request):
     query = request.GET.get('query')
 
-    search_url = f'https://www.musinsa.com/search/musinsa/integration?q={query}' # 검색어 적용
+    search_url = f'https://www.musinsa.com/search/musinsa/goods?q={query}'
     res = requests.get(search_url)
     soup = BeautifulSoup(res.text, 'html.parser')
     
@@ -65,7 +59,14 @@ def search(request):
 
     Product.objects.bulk_create(products_search)
 
+    products = Product.objects.order_by('-pk')
+    per_page = 12
+    paginator = Paginator(products, per_page)
+    page = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page)
+
     context = {
+        'products': page_obj,
         'products_search': products_search,
         'query': query,
     }
@@ -103,7 +104,14 @@ def category(request, category_type):
 
     Product.objects.bulk_create(products_category)
 
+    products = Product.objects.order_by('-pk')
+    per_page = 12
+    paginator = Paginator(products, per_page)
+    page = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page)
+
     context = {
+        'products': page_obj,
         'products_category': products_category,
         'category_title': category_title,
     }

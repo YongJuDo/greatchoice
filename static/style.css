@@ -118,6 +118,28 @@ footer {
 .search_card {
   margin-bottom: 20px;
 }
+
+.pagenation_container {
+  margin-top: 30px;
+  margin-bottom: 20px;
+}
+
+.page-text {
+  color: black;
+}
+
+.active>.page-link {
+  background-color: gray;
+  border-color: gray;
+}
+
+.pagination {
+  --bs-pagination-hover-color: none;
+  --bs-pagination-active-bg: none;
+  --bs-pagination-focus-color: none;
+  --bs-pagination-active-border-color: none;
+  --bs-pagination-focus-box-shadow: none;
+}
 /* search.html */
 
 /* create.html */
@@ -170,36 +192,49 @@ footer {
 
 /* profile.html */
 .mypage_myreview {
-  display: flex;
-  overflow-x: scroll;
   margin: 1rem;
   padding: 0.5rem 0 1rem;
 }
 
 .myreviews {
-  display: flex;
-  flex-direction: column;
-  margin-right: 2rem;
+  display: block;
+  width: 100%;
+  margin-left: 2rem;
+  height: 160px;
+}
+
+.mypage_img_container{
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.mypage_img{
+  width: 200px;
+  height: 160px;
 }
 
 .mypage_text{
-  display: flex;
-  flex-direction: column;
-  flex-wrap: wrap;
+  display: inline-block;
+  width: 65%;
+  vertical-align: middle;
+  margin-left: 3rem;
 }
 
 .mypage_review_title {
   display: flex;
   justify-content: space-between;
+  align-items: center;
 }
 
 .mypage_score {
   display: flex;
   align-items: center;
+  margin-bottom: 0.625rem;
 }
 
 .mypage_score_text {
   font-size: 1.25rem;
+  margin-left: 0.5rem
 }
 
 .mypage_title {
@@ -209,6 +244,35 @@ footer {
 
 .mypage_content {
   font-size: 1rem;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mypage_text_funtion {
+  display: inline-block;
+  vertical-align: middle;
+  width: 10%;
+  height: 140px;
+  text-align: end;
+}
+
+.mypage_delete {
+  margin-bottom: 5.5rem;
+}
+
+
+.mypage_update {
+  font-size: 1.5rem;
+}
+
+
+.mypage_div_line {
+  color: gray;
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
 }
 
 /* profile.html */
