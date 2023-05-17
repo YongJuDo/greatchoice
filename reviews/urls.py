@@ -1,4 +1,6 @@
 from django.urls import path
+from django.conf.urls.static import static
+from django.conf import settings
 from . import views
 
 
@@ -19,4 +21,4 @@ urlpatterns = [
     path('comment_create/<int:review_pk>/', views.comment_create, name='comment_create'),
     path('comment_like/<int:review_pk>/<int:comment_pk>', views.comment_like, name='comment_like'),
     path('comment_delete/<int:review_pk>/<int:comment_pk>', views.comment_delete, name='comment_delete'),
-]
+]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
