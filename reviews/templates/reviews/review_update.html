@@ -17,12 +17,12 @@
     </div>
   </div>
   <div class="create_form_container">
-        <div class="rating review_rating">
-            <div id="rating-stars"></div>
-            <input type="hidden" id="score-input" name="score" value="0">
-        </div>
     <form action="{% url 'reviews:review_update' review.pk %}" method="POST" enctype="multipart/form-data">
       {% csrf_token %}
+      <div class="rating review_rating">
+        <div id="rating-stars"></div>
+        <input type="hidden" id="score-input" name="score" value="0">
+      </div>
       {% for field in form %}
         <p class="content_form">{{ field }}</p>
       {% endfor %}
