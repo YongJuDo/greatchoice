@@ -3,11 +3,19 @@
 <div class="flex flex-row p-10">
   <!-- 제품정보 -->
   <div class="flex flex-col w-1/6 h-1/2 bg-white border border-gray-200 rounded-lg shadow mr-5 p-5">
-    <img class="w-5/6 self-center rounded-lg mb-2" src="{{ product.photo }}" alt="product image" />
-    <h5 class="text-base text-gray-500 truncate">{{ product.brand }}</h5>
-    <a href="https://www.musinsa.com/app/goods/{{ product.data_id}}" target="_blank">
-      <h5 class="text-xl font-semibold tracking-tight text-gray-900">{{ product.title }}</h5>
-    </a>
+    {% if product_exists %}
+      <img class="w-5/6 self-center rounded-lg mb-2" src="{{ product.photo }}" alt="product image" />
+      <h5 class="text-base text-gray-500 truncate">{{ product.brand }}</h5>
+      <a href="https://www.musinsa.com/app/goods/{{ product.data_id}}" target="_blank">
+        <h5 class="text-xl font-semibold tracking-tight text-gray-900">{{ product.title }}</h5>
+      </a>
+    {% else %}
+      <img class="w-5/6 self-center rounded-lg mb-2" src="{{ review.photo }}" alt="product image" />
+      <h5 class="text-base text-gray-500 truncate">{{ review.brand }}</h5>
+      <a href="https://www.musinsa.com/app/goods/{{ review.review_product_id }}" target="_blank">
+        <h5 class="text-xl font-semibold tracking-tight text-gray-900">{{ review.title }}</h5>
+      </a>
+    {% endif %}
     <div class="flex items-center">
       <svg aria-hidden="true" class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><title>Rating star</title><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
       {% if average_score == None %}
@@ -28,9 +36,15 @@
         <button id="review-tab" data-tabs-target="#review" type="button" role="tab" aria-controls="review" aria-selected="true" class="inline-block p-4 text-blue-600 rounded-tl-lg hover:bg-gray-100">리뷰({{ review_count }})</button>
       </li>
       <li class="mr-2">
-        <a href="{% url 'reviews:create' product.data_id %}">
-          <button type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center mr-2">+ 리뷰 쓰기</button>
-        </a>
+          {% if product_exists %}
+            <a href="{% url 'reviews:create' product.data_id %}">
+              <button button type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center mr-2">+ 리뷰 쓰기</button>
+            </a> 
+          {% else %}
+            <a href="{% url 'reviews:create' review.review_product_id %}">
+              <button button type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center mr-2">+ 리뷰 쓰기</button>
+            </a> 
+          {% endif %}
       </li>
     </ul>
     <!-- 리뷰 콘텐츠창 -->

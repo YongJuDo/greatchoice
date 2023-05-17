@@ -10,14 +10,26 @@
 
 <div class="create_container">
     <div class="create_card">
-        <img class="create_img" src="{{ product.photo }}" alt="이미지 없음">
-        <div class="create_text">
-            <strong><p class="create_brand">{{ product.brand }}</p></strong>
-            <p class="create_title">{{ product.title }}</p>
-        </div>
+        {% if product_exists %}
+            <img class="create_img" src="{{ product.photo }}" alt="이미지 없음">
+            <div class="create_text">
+                <strong><p class="create_brand">{{ product.brand }}</p></strong>
+                <p class="create_title">{{ product.title }}</p>
+            </div>
+        {% else %}
+            <img class="create_img" src="{{ review.photo }}" alt="이미지 없음">
+            <div class="create_text">
+                <strong><p class="create_brand">{{ review.brand }}</p></strong>
+                <p class="create_title">{{ review.title }}</p>
+            </div>
+        {% endif %}
     </div>
     <div class="create_form_container">
-        <form action="{% url 'reviews:create' product.data_id %}" method="POST" enctype="multipart/form-data">
+        {% if product_exists %}
+            <form action="{% url 'reviews:create' product.data_id %}" method="POST" enctype="multipart/form-data">
+        {% else %}
+            <form action="{% url 'reviews:create' review.review_product_id %}" method="POST" enctype="multipart/form-data">
+        {% endif %}
             {% csrf_token %}
             {% for field in review_form %}
                 <p class="content_form">{{ field }}</p>
