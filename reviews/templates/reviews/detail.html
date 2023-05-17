@@ -37,10 +37,11 @@
     <div id="defaultTabContent">
       <div class="hidden p-4 bg-white rounded-lg" id="review" role="tabpanel" aria-labelledby="review-tab">
         {% for review in reviews %}
+        {% with person=review.user %}
           <article>
             <div class="flex justify-between">
               <div class="flex items-center space-x-4">
-                <img class="w-10 h-10 rounded-full" src="https://picsum.photos/200" alt="">
+                <img class="w-10 h-10 rounded-full" src="{{ person.profile_image.url }}" alt=''>
                 <div class="space-y-1 font-base">
                   <p><a href="{% url 'accounts:profile' review.user.username %}">{{ review.user }}</a><span class="block text-sm text-gray-500">{{ review.created_at|date:"Y-m-d"}}</span></p>
                 </div>
@@ -58,7 +59,8 @@
                 </div>
                 {% if review.review_photo %}
                   <img src="{{ review.review_photo.url }}" alt="리뷰 이미지" class="w-32 h-32 rounded-lg">
-                {% endif %}
+                  {% endif %}
+                  {% endwith %}
               </div>
             </a>
             <aside>
