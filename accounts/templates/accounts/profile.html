@@ -38,18 +38,17 @@
     <div class="flex flex-col items-center pb-10">
       <img class="w-24 h-24 mb-3 rounded-full shadow-lg" src="{{ person.profile_image.url }}" alt=''>
       <h5 class="mb-1 text-xl font-medium text-gray-900">{{ person.username }}</h5>
-      <span class="text-sm text-gray-500">팔로잉 {{ person.followings.all.count }} / 팔로워 {{ person.followers.all.count }}</span>
+      <span class="text-sm text-gray-500">팔로잉 <span id="followings-count">{{ person.followings.all.count }}</span> / 팔로워 <span id="followers-count">{{ person.followers.all.count }}</span></span>
+      <!-- 팔로우 기능 -->
       {% if request.user != person %}
         <div class="flex mt-4 space-x-3 md:mt-6">
-          <form action="{% url 'accounts:follow' person.pk %}" method="POST">
+          <form id="follow-form" data-user-id="{{ person.pk }}">
             {% csrf_token %}
-            <button type="submit" class="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300">
-              {% if request.user in person.followers.all %}
-                Unfollow
-              {% else %}
-                Follow
-              {% endif %}
-            </button>
+            {% if request.user in person.followers.all %}
+              <input type="submit" value="Unfollow" class="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300">
+            {% else %}
+              <input type="submit" value="Follow" class="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300">
+            {% endif %}
           </form>
         </div>
       {% endif %}
@@ -255,3 +254,37 @@
   </div>
 </div>
 {% endblock body %}
+
+{% block js %}
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script>
+    const form = document.querySelector('#follow-form')
+    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
+    form.addEventListener('submit', function (event) {
+      event.preventDefault()
+      const userId = event.target.dataset.userId
+      axios({
+        method: 'post',
+        url: `/accounts/follow/${userId}/`,
+        headers: {'X-CSRFToken': csrftoken},
+      })
+      .then((response) => {
+        const isFollowed = response.data.is_followed
+        const followBtn = document.querySelector('#follow-form > input[type=submit]')
+
+        if (isFollowed === true) {
+          followBtn.value = 'Unfollow'
+        } else {
+          followBtn.value = 'Follow'
+        }
+        const followingsCountTag = document.querySelector('#followings-count')
+        const followersCountTag = document.querySelector('#followers-count')
+        const followingsCountData = response.data.followings_count
+        const followersCountData = response.data.followers_count
+        followingsCountTag.textContent = followingsCountData
+        followersCountTag.textContent = followersCountData
+
+        })
+    })
+  </script>
+{% endblock js %}

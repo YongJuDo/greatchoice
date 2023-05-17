@@ -31,8 +31,8 @@ urlpatterns = [
     path('basic_logout/', views.basic_logout, name='basic_logout'),
     path('logout/', views.logout, name='logout'),
     path('update/', views.update, name='update'),
-    path('follow/<int:user_pk>', views.follow, name='follow'),
-    path('profile/<str:username>', views.profile, name='profile'),
+    path('follow/<int:user_pk>/', views.follow, name='follow'),
+    path('profile/<str:username>/', views.profile, name='profile'),
     path('set_default_profile_image/', views.set_default_profile_image, name='set_default_profile_image'),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
