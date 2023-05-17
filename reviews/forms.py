@@ -40,7 +40,7 @@ class ReviewForm(forms.ModelForm):
         label='이미지',
         label_suffix='',
         required = False,
-        widget=forms.FileInput(
+        widget=forms.ClearableFileInput (
             attrs={
                 'placeholder': '이미지',
             }
