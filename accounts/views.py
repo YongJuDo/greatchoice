@@ -7,7 +7,7 @@ from django.contrib.auth import get_user_model
 from allauth.socialaccount.models import SocialAccount
 from django.core.files import File
 import urllib.request
-
+from django.core.paginator import Paginator
 
 def kakao_disconnect(request):
     if request.user.is_authenticated:
@@ -147,9 +147,16 @@ def profile(request, username):
     User = get_user_model()
     person = User.objects.get(username=username)
     is_kakao_connected = SocialAccount.objects.filter(user=request.user, provider='kakao').exists()
+    reviews = person.review_set.all()
+    review_count = len(reviews)
+    page = request.GET.get('page', 1)
+    paginator = Paginator(reviews, 4)  # 한 페이지에 4개씩 표시하도록 수정
+    page_obj = paginator.get_page(page)
     context = {
         'is_kakao_connected': is_kakao_connected,
         'person': person,
+        'review_count': review_count,
+        'reviews': page_obj,
     }
     return render(request, 'accounts/profile.html', context)
 

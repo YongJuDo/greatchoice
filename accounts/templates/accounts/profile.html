@@ -4,7 +4,7 @@
 {% block body %}
 <div class="flex flex-row p-10">
   <!-- 좌측 사용자 정보칸 -->
-  <div class="w-1/4 bg-white border border-gray-200 rounded-lg shadow mr-5">
+  <div class="w-1/4 h-2/4 bg-white border border-gray-200 rounded-lg shadow mr-5">
     <div class="flex justify-end px-4 pt-4">
       {% if request.user == person %}
         <button id="dropdownButton" data-dropdown-toggle="dropdown" class="inline-block text-gray-500 hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 rounded-lg text-sm p-1.5" type="button">
@@ -76,18 +76,18 @@
       <!-- 내가 쓴 리뷰 -->
       <div class="p-4 bg-white rounded-lg" id="review" role="tabpanel" aria-labelledby="review-tab">
         <div class="mypage_myreview">
-          {% if person.review_set.all %}
-            {% for review in person.review_set.all %}
+          {% if reviews %}
+            {% for review in reviews %}
               <div class="myreviews">
                 <a href="{% url 'reviews:review_detail' review.pk %}">
                   {% if review.review_photo %}
-                  <div class="mypage_img_container">
-                    <img class="mypage_img rounded-lg" src="{{ review.review_photo.url }}" alt="이미지 없음">
-                  </div>
+                    <div class="mypage_img_container">
+                      <img class="mypage_img rounded-lg" src="{{ review.review_photo.url }}" alt="이미지 없음">
+                    </div>
                   {% else %}
-                  <div class="mypage_img_container">
-                    <img class="mypage_img rounded-lg" src="{% static 'img/noimg.jpg' %}" alt="이미지 없음">
-                  </div>
+                    <div class="mypage_img_container">
+                      <img class="mypage_img rounded-lg" src="{% static 'img/noimg.jpg' %}" alt="이미지 없음">
+                    </div>
                   {% endif %}
                   <div class="mypage_text">
                     <div class="mypage_review_title">
@@ -115,54 +115,126 @@
               </div>
               <hr class="mypage_div_line">
             {% endfor %}
+
+      <!-- 페이지네이션 -->
+        <div class="pagination justify-center">
+          {% if reviews.has_previous %}
+          <li class="page-item">
+            <a class="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700" href="?page=1">처음으로</a>
+          </li>
+            <li class="page-item">
+              <a class="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700" href="?page={{ reviews.previous_page_number }}">이전</a>
+            </li>
           {% else %}
-            <p>내가 쓴 리뷰가 없습니다.</p>
+            <li class="page-item disabled">
+              <a class="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700" tabindex="-1" aria-disabled="true" href="#">이전</a>
+            </li>
+          {% endif %}
+
+          {% for page_number in reviews.paginator.page_range %}
+          {% if page_number == reviews.number %}
+          <li class="page-item active" aria-current="page">
+              <a class="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700" href="?page={{ page_number }}">{{ page_number }}</a>
+          </li>
+          {% else %}
+          <li class="page-item">
+              <a class="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700" href="?page={{ page_number }}">{{ page_number }}</a>
+          </li>
+          {% endif %}
+          {% endfor %}
+          {% if reviews.has_next %}
+          <li class="page-item">
+            <a class="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700" href="?page={{ reviews.next_page_number }}">다음</a>
+          </li>
+          <li class="page-item">
+            <a class="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700" href="?page={{ reviews.paginator.num_pages }}">마지막으로</a>
+          </li>
           {% endif %}
         </div>
+        <!-- 페이지네이션 끝 -->
+        {% else %}
+          <p>내가 쓴 리뷰가 없습니다.</p>
+        {% endif %}
       </div>
-
+    </div>
       <!-- 내가 좋아요한 리뷰 -->
       <div class="p-4 bg-white rounded-lg" id="like" role="tabpanel" aria-labelledby="like-tab">
         <div class="mypage_myreview">
           {% if person.like_reviews.all %}
-            {% for review in person.like_reviews.all %}
-              <div class="myreviews">
-                <a href="{% url 'reviews:review_detail' review.pk %}">
-                  {% if review.review_photo %}
-                    <div class="mypage_img_container">
-                      <img class="mypage_img rounded-lg" src="{{ review.review_photo.url }}" alt="이미지 없음">
-                    </div>
-                  {% else %}
-                    <div class="mypage_img_container">
-                      <img class="mypage_img rounded-lg" src="{% static 'img/noimg.jpg' %}" alt="이미지 없음">
-                    </div>
-                  {% endif %}
-                  <div class="mypage_text">
-                    <div class="mypage_review_title">
-                      <p class="mypage_title">{{ review.review_title }}</p>
-                      {{ review.created_at|date:"Y-m-d"}}
-                    </div>
-                    <div class="mypage_score">
-                      <svg aria-hidden="true" class="w-6 h-6 text-yellow-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><title>Rating star</title><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
-                      <p class="mypage_score_text">{{ review.score }}</p>
-                    </div>
-                    <p class="mypage_content">{{ review.content }}</p>
-                  </div>
-                  {% if request.user == review.user %}
-                    <div class="mypage_text_funtion">
-                      <form action="{% url 'reviews:review_delete' review_pk=review.pk %}" method="POST" class="mypage_delete">
-                        {% csrf_token %}
-                        <button type="submit">
-                          <p>X</p>
-                        </button>
-                      </form>
-                      <a href="{% url 'reviews:review_update' review.pk %}">수정</a>
-                    </div>
-                  {% endif %}
-                </a>
+          {% for review in person.like_reviews.all %}
+          <div class="myreviews">
+            <a href="{% url 'reviews:review_detail' review.pk %}">
+              {% if review.review_photo %}
+                <div class="mypage_img_container">
+                  <img class="mypage_img rounded-lg" src="{{ review.review_photo.url }}" alt="이미지 없음">
+                </div>
+              {% else %}
+                <div class="mypage_img_container">
+                  <img class="mypage_img rounded-lg" src="{% static 'img/noimg.jpg' %}" alt="이미지 없음">
+                </div>
+              {% endif %}
+              <div class="mypage_text">
+                <div class="mypage_review_title">
+                  <p class="mypage_title">{{ review.review_title }}</p>
+                  {{ review.created_at|date:"Y-m-d"}}
+                </div>
+                <div class="mypage_score">
+                  <svg aria-hidden="true" class="w-6 h-6 text-yellow-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><title>Rating star</title><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                  <p class="mypage_score_text">{{ review.score }}</p>
+                </div>
+                <p class="mypage_content">{{ review.content }}</p>
               </div>
-              <hr class="mypage_div_line">
-            {% endfor %}
+              {% if request.user == review.user %}
+                <div class="mypage_text_funtion">
+                  <form action="{% url 'reviews:review_delete' review_pk=review.pk %}" method="POST" class="mypage_delete">
+                    {% csrf_token %}
+                    <button type="submit">
+                      <p>X</p>
+                    </button>
+                  </form>
+                  <a href="{% url 'reviews:review_update' review.pk %}">수정</a>
+                </div>
+              {% endif %}
+            </a>
+          </div>
+          <hr class="mypage_div_line">
+        {% endfor %}
+      <!-- 페이지네이션 -->
+      <div class="pagination justify-center">
+        {% if person.like_reviews.all.has_previous %}
+        <li class="page-item">
+          <a class="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700" href="?page=1">처음으로</a>
+        </li>
+          <li class="page-item">
+            <a class="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700" href="?page={{ reviews.previous_page_number }}">이전</a>
+          </li>
+        {% else %}
+          <li class="page-item disabled">
+            <a class="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700" tabindex="-1" aria-disabled="true" href="#">이전</a>
+          </li>
+        {% endif %}
+
+        {% for page_number in person.like_reviews.all.paginator.page_range %}
+        {% if page_number == person.like_reviews.all.number %}
+        <li class="page-item active" aria-current="page">
+            <a class="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700" href="?page={{ page_number }}">{{ page_number }}</a>
+        </li>
+        {% else %}
+        <li class="page-item">
+            <a class="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700" href="?page={{ page_number }}">{{ page_number }}</a>
+        </li>
+        {% endif %}
+        {% endfor %}
+        {% if person.like_reviews.all.has_next %}
+        <li class="page-item">
+          <a class="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700" href="?page={{ reviews.next_page_number }}">다음</a>
+        </li>
+        <li class="page-item">
+          <a class="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700" href="?page={{ reviews.paginator.num_pages }}">마지막으로</a>
+        </li>
+        {% endif %}
+      </div>
+      <!-- 페이지네이션 끝 -->
           {% else %}
             <p>좋아요 한 리뷰가 없습니다.</p>
           {% endif %}
