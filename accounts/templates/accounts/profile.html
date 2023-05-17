@@ -143,7 +143,7 @@
                   </div>
                   {% if request.user == review.user %}
                     <div class="mypage_text_funtion">
-                      <form action="{% url 'reviews:review_delete' review.pk %}" method="POST" class="mypage_delete">
+                      <form action="{% url 'reviews:review_delete' review_pk=review.pk %}" method="POST" class="mypage_delete">
                         {% csrf_token %}
                         <button type="submit">
                           <p>X</p>
