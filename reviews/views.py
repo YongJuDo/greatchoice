@@ -119,15 +119,26 @@ def category(request, category_type):
 
 
 def product_detail(request, data_id):
-    product = Product.objects.get(data_id=data_id)
+    if Product.objects.filter(data_id=data_id).exists():
+        product = Product.objects.get(data_id=data_id)
+        product_exists = True
+        selected_review = None
+    else:
+        selected_review = Review.objects.filter(review_product_id=data_id).first()
+        product_exists = False
+        product = None
+
     reviews = Review.objects.filter(review_product_id=data_id).order_by('-pk')
     review_count = len(reviews)
     page = request.GET.get('page', '1')
     paginator = Paginator(reviews, 3)
     page_obj = paginator.get_page(page)
     average_score = reviews.aggregate(Avg('score'))
+
     context = {
+        'product_exists': product_exists,
         'product': product,
+        'review': selected_review,
         'reviews': page_obj,
         'review_count': review_count,
         'average_score': average_score['score__avg'],
@@ -137,15 +148,29 @@ def product_detail(request, data_id):
 
 @login_required
 def create(request, data_id):
-    product = Product.objects.get(data_id=data_id)
+    if Product.objects.filter(data_id=data_id).exists():
+        product = Product.objects.get(data_id=data_id)
+        product_exists = True
+        selected_review = None
+    else:
+        selected_review = Review.objects.filter(review_product_id=data_id).first()
+        product_exists = False
+        product = None
+
     if request.method == 'POST':
         review_form = ReviewForm(request.POST, request.FILES)
         if review_form.is_valid():
             review = review_form.save(commit=False)
-            review.title = product.title
-            review.brand = product.brand
-            review.photo = product.photo
-            review.review_product_id = product.data_id
+            if Product.objects.filter(data_id=data_id).exists():
+                review.title = product.title
+                review.brand = product.brand
+                review.photo = product.photo
+                review.review_product_id = product.data_id
+            else:
+                review.title = selected_review.title
+                review.brand = selected_review.brand
+                review.photo = selected_review.photo
+                review.review_product_id = selected_review.review_product_id
             review.user = request.user
             review.save()
             return redirect('reviews:product_detail', data_id)
@@ -155,6 +180,8 @@ def create(request, data_id):
     context = {
         'review_form': review_form,
         'product': product,
+        'review': selected_review,
+        'product_exists': product_exists,
     }
     return render(request, 'reviews/create.html', context)
 
