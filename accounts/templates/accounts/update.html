@@ -2,7 +2,7 @@
 {% load static %}
 {% block body %}
 <div class="card m-2 p-2" style="width:50%;">
-    <img src="{{ user.profile_image.url }}" class="card-img-top" alt=''>
+    <img src="{{ user.profile_image.url }}" class="w-24 h-24 mb-3 rounded-full shadow-lg" alt=''>
     <div class="card-body">
         <form action="{% url 'accounts:update' %} " method="POST" enctype="multipart/form-data">
         {% csrf_token %}
