@@ -1,0 +1,152 @@
+[
+{
+    "model": "reviews.product",
+    "pk": 3928,
+    "fields": {
+        "title": "[무료반품][데일리지] 쿨 경량 원턱 와이드 진_SPTJD37C52",
+        "brand": "스파오",
+        "photo": "https://image.msscdn.net/images/goods_img/20230418/3242778/3242778_16844093776312_125.jpg",
+        "data_id": 3242778
+    }
+},
+{
+    "model": "reviews.product",
+    "pk": 3929,
+    "fields": {
+        "title": "[무료반품]51058 KURABO MILKY WAY JEANS [WIDE STRAIGHT]",
+        "brand": "브랜디드",
+        "photo": "https://image.msscdn.net/images/goods_img/20230127/3042599/3042599_16796180411559_125.jpg",
+        "data_id": 3042599
+    }
+},
+{
+    "model": "reviews.product",
+    "pk": 3930,
+    "fields": {
+        "title": "쿨 썸머 크로스턱 와이드 슬랙스[베이지]",
+        "brand": "시그니처",
+        "photo": "https://image.msscdn.net/images/goods_img/20230418/3244221/3244221_16825854162205_125.jpg",
+        "data_id": 3244221
+    }
+},
+{
+    "model": "reviews.product",
+    "pk": 3931,
+    "fields": {
+        "title": "썸머 라운드 네트 하프 니트[아이보리]",
+        "brand": "시그니처",
+        "photo": "https://image.msscdn.net/images/goods_img/20230322/3171025/3171025_16826749838975_125.jpg",
+        "data_id": 3171025
+    }
+},
+{
+    "model": "reviews.product",
+    "pk": 3932,
+    "fields": {
+        "title": "허니비 스트라이프 칼라 니트웨어_베이지",
+        "brand": "인템포무드",
+        "photo": "https://image.msscdn.net/images/goods_img/20230421/3253703/3253703_16830014442005_125.jpg",
+        "data_id": 3253703
+    }
+},
+{
+    "model": "reviews.product",
+    "pk": 3933,
+    "fields": {
+        "title": "[무료반품](시티보이) 오버핏 옥스포드 반팔셔츠_SPYWD25C01",
+        "brand": "스파오",
+        "photo": "https://image.msscdn.net/images/goods_img/20230214/3080482/3080482_16844092156821_125.jpg",
+        "data_id": 3080482
+    }
+},
+{
+    "model": "reviews.product",
+    "pk": 3934,
+    "fields": {
+        "title": "[무료반품]시티 마라톤 PT - 베이지:네이비 / D67397",
+        "brand": "아디다스",
+        "photo": "https://image.msscdn.net/images/goods_img/20150403/181907/181907_3_125.jpg",
+        "data_id": 181907
+    }
+},
+{
+    "model": "reviews.product",
+    "pk": 3935,
+    "fields": {
+        "title": "[72시간특가]여성 버터플라이 프린트 반소매 티셔츠 - 핑크 / T3357428",
+        "brand": "가니",
+        "photo": "https://image.msscdn.net/images/goods_img/20230322/3168107/3168107_16829992159399_125.jpg",
+        "data_id": 3168107
+    }
+},
+{
+    "model": "reviews.product",
+    "pk": 3936,
+    "fields": {
+        "title": "[사은품 증정]범죄도시3 윈드 브레이커 - 화이트",
+        "brand": "리복",
+        "photo": "https://image.msscdn.net/images/goods_img/20230509/3284227/3284227_16836143516659_125.jpg",
+        "data_id": 3284227
+    }
+},
+{
+    "model": "reviews.product",
+    "pk": 3937,
+    "fields": {
+        "title": "[무료반품]BB 트랙탑 - 블랙 / IK9148",
+        "brand": "아디다스",
+        "photo": "https://image.msscdn.net/images/goods_img/20230426/3262230/3262230_16830138357410_125.jpg",
+        "data_id": 3262230
+    }
+},
+{
+    "model": "reviews.product",
+    "pk": 3938,
+    "fields": {
+        "title": "[무료반품]버뮤다 - 민트 / GY7387",
+        "brand": "아디다스",
+        "photo": "https://image.msscdn.net/images/goods_img/20230511/3290283/3290283_16837932565000_125.jpg",
+        "data_id": 3290283
+    }
+},
+{
+    "model": "reviews.product",
+    "pk": 3939,
+    "fields": {
+        "title": "[무료반품]BB 트랙 팬츠 - 블랙 / IK9152",
+        "brand": "아디다스",
+        "photo": "https://image.msscdn.net/images/goods_img/20230426/3262223/3262223_16830139888417_125.jpg",
+        "data_id": 3262223
+    }
+},
+{
+    "model": "reviews.product",
+    "pk": 3940,
+    "fields": {
+        "title": "공용 미디움 크루아상 크로스백 - 다크 초콜릿 / BG0001LL0018BR490",
+        "brand": "르메르",
+        "photo": "https://image.msscdn.net/images/goods_img/20230327/3181583/3181583_16830046892716_125.jpg",
+        "data_id": 3181583
+    }
+},
+{
+    "model": "reviews.product",
+    "pk": 3941,
+    "fields": {
+        "title": "[무료반품]BB 트랙탑 - 스카이블루 / IK9150",
+        "brand": "아디다스",
+        "photo": "https://image.msscdn.net/images/goods_img/20230425/3260637/3260637_16829852887585_125.jpg",
+        "data_id": 3260637
+    }
+},
+{
+    "model": "reviews.product",
+    "pk": 3942,
+    "fields": {
+        "title": "LOWEN RAIN BOOTS SHORT - 3color",
+        "brand": "락피쉬웨더웨어",
+        "photo": "https://image.msscdn.net/images/goods_img/20230309/3134568/3134568_16806908783717_125.jpg",
+        "data_id": 3134568
+    }
+}
+]
