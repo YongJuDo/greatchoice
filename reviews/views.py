@@ -19,7 +19,7 @@ def index(request):
     ranking_url = 'https://search.musinsa.com/ranking/best?u_cat_cd='
     res = requests.get(ranking_url)
     soup = BeautifulSoup(res.text, 'html.parser')
-    
+
     products_ranking = []
     for item in soup.select('.li_inner')[:10]:
         product = Product()
@@ -28,13 +28,27 @@ def index(request):
         product.title = item.select('.article_info > p > a')[1].contents[-1].strip()
         product.photo = item.select('.lazyload')[0]['data-original']
         products_ranking.append(product)
+    
+    
+    showcase_url = "https://www.musinsa.com/app/showcase/lists"
+    headers = { "User-Agent": "Mozilla/5.0" }
+    showcase_res = requests.get(showcase_url, headers=headers)
+    showcase_soup = BeautifulSoup(showcase_res.text, "html.parser")
 
+    showcase_data = []
+    for item in showcase_soup.select('.n-card-list .n-card-img')[:3]:
+        showcase_link = item.select_one('a')['href']
+        showcase_img = item.select_one('img')['src']
+        showcase_data.append({'link': showcase_link, 'image': showcase_img})
+    
+    
     Product.objects.all().delete()
 
     Product.objects.bulk_create(products_ranking)
 
     context = {
         'products_ranking': products_ranking,
+        'showcase_data': showcase_data,
     }
     return render(request,'reviews/index.html', context)
 
@@ -173,6 +187,8 @@ def create(request, data_id):
                     review.brand = selected_review.brand
                     review.photo = selected_review.photo
                     review.review_product_id = selected_review.review_product_id
+
+                review.score = int(request.POST['score'])
                 review.user = request.user
                 review.save()
                 return redirect('reviews:product_detail', data_id)
@@ -205,6 +221,7 @@ def review_update(request, review_pk):
             form = ReviewForm(request.POST, request.FILES, instance=review)
             if form.is_valid():
                 form.save()
+                review.score = int(request.POST['score'])
                 return redirect('reviews:review_detail', review.pk)
         else:
             form = ReviewForm(instance=review)

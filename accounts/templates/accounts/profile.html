@@ -38,18 +38,17 @@
     <div class="flex flex-col items-center pb-10">
       <img class="w-24 h-24 mb-3 rounded-full shadow-lg" src="{{ person.profile_image.url }}" alt=''>
       <h5 class="mb-1 text-xl font-medium text-gray-900">{{ person.username }}</h5>
-      <span class="text-sm text-gray-500">팔로잉 {{ person.followings.all.count }} / 팔로워 {{ person.followers.all.count }}</span>
+      <span class="text-sm text-gray-500">팔로잉 <span id="followings-count">{{ person.followings.all.count }}</span> / 팔로워 <span id="followers-count">{{ person.followers.all.count }}</span></span>
+      <!-- 팔로우 기능 -->
       {% if request.user != person %}
         <div class="flex mt-4 space-x-3 md:mt-6">
-          <form action="{% url 'accounts:follow' person.pk %}" method="POST">
+          <form id="follow-form" data-user-id="{{ person.pk }}">
             {% csrf_token %}
-            <button type="submit" class="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300">
-              {% if request.user in person.followers.all %}
-                Unfollow
-              {% else %}
-                Follow
-              {% endif %}
-            </button>
+            {% if request.user in person.followers.all %}
+              <input type="submit" value="Unfollow" class="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300">
+            {% else %}
+              <input type="submit" value="Follow" class="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300">
+            {% endif %}
           </form>
         </div>
       {% endif %}
@@ -60,10 +59,10 @@
     <!-- 상단탭 -->
     <ul class="flex flex-wrap text-sm font-medium text-center text-gray-500 border-b border-gray-200 rounded-t-lg bg-gray-50" id="defaultTab" data-tabs-toggle="#defaultTabContent" role="tablist">
       <li class="mr-2">
-        <button id="review-tab" data-tabs-target="#review" type="button" role="tab" aria-controls="review" aria-selected="true" class="inline-block p-4 text-blue-600 rounded-tl-lg hover:bg-gray-100">내가 쓴 리뷰</button>
+        <button id="review-tab" data-tabs-target="#review" type="button" role="tab" aria-controls="review" aria-selected="true" class="inline-block p-4 text-blue-600 rounded-tl-lg hover:bg-gray-100">내가 쓴 리뷰 <span>({{ person.review_set.all|length }})</span></button>
       </li>
       <li class="mr-2">
-        <button id="like-tab" data-tabs-target="#like" type="button" role="tab" aria-controls="like" aria-selected="false" class="inline-block p-4 hover:text-gray-600 hover:bg-gray-100">내가 좋아요한 리뷰</button>
+        <button id="like-tab" data-tabs-target="#like" type="button" role="tab" aria-controls="like" aria-selected="false" class="inline-block p-4 hover:text-gray-600 hover:bg-gray-100">내가 좋아요한 리뷰 <span>({{ person.like_reviews.all|length }})</span></button>
       </li>
       <li class="mr-2">
         <button id="following-tab" data-tabs-target="#following" type="button" role="tab" aria-controls="following" aria-selected="false" class="inline-block p-4 hover:text-gray-600 hover:bg-gray-100">팔로잉 목록</button>
@@ -108,7 +107,7 @@
                           <p>X</p>
                         </button>
                       </form>
-                      <a href="{% url 'reviews:review_update' review.review_product_id %}">수정</a>
+                      <a href="{% url 'reviews:review_update' review.pk %}">수정</a>
                     </div>
                   {% endif %}
                 </a>
@@ -291,3 +290,37 @@
   </div>
 </div>
 {% endblock body %}
+
+{% block js %}
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script>
+    const form = document.querySelector('#follow-form')
+    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
+    form.addEventListener('submit', function (event) {
+      event.preventDefault()
+      const userId = event.target.dataset.userId
+      axios({
+        method: 'post',
+        url: `/accounts/follow/${userId}/`,
+        headers: {'X-CSRFToken': csrftoken},
+      })
+      .then((response) => {
+        const isFollowed = response.data.is_followed
+        const followBtn = document.querySelector('#follow-form > input[type=submit]')
+
+        if (isFollowed === true) {
+          followBtn.value = 'Unfollow'
+        } else {
+          followBtn.value = 'Follow'
+        }
+        const followingsCountTag = document.querySelector('#followings-count')
+        const followersCountTag = document.querySelector('#followers-count')
+        const followingsCountData = response.data.followings_count
+        const followersCountData = response.data.followers_count
+        followingsCountTag.textContent = followingsCountData
+        followersCountTag.textContent = followersCountData
+
+        })
+    })
+  </script>
+{% endblock js %}

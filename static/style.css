@@ -148,11 +148,12 @@ footer {
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin-top: 3rem;
 }
 
 .create_card {
+  width: 33%;
   display: flex;
-  margin-top: 1.75rem;
 }
 
 .create_text {
@@ -186,6 +187,10 @@ footer {
   font-size: 1.5rem;
   text-align: end;
   margin-bottom: 5rem;
+}
+
+.rating {
+  margin-bottom: 20px;
 }
 
 /* create.html */

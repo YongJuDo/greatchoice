@@ -11,14 +11,14 @@ class ProductForm(forms.ModelForm):
 class ReviewForm(forms.ModelForm):
     class Meta:
         model = Review
-        fields = ('review_title','content','review_photo', 'score')
+        fields = ('review_title','content','review_photo',)
 
     review_title = forms.CharField(
         label='제목',
         label_suffix='',
         widget=forms.TextInput(
             attrs={
-                'class': 'bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500',
+                'class': 'bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5',
                 'placeholder': '제목',
             }
         )
@@ -29,7 +29,7 @@ class ReviewForm(forms.ModelForm):
         label_suffix='',
         widget=forms.Textarea(
             attrs={
-                'class': 'bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500',
+                'class': 'bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5',
                 'placeholder': '내용',
             }
         )
@@ -40,19 +40,9 @@ class ReviewForm(forms.ModelForm):
         label='이미지',
         label_suffix='',
         required = False,
-        widget=forms.ClearableFileInput (
+        widget=forms.FileInput (
             attrs={
                 'placeholder': '이미지',
-            }
-        )
-    )
-    score = forms.IntegerField(
-        label='평점',
-        label_suffix='',
-        widget=forms.NumberInput(
-            attrs={
-                'class': 'bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500',
-                'placeholder': '평점',
             }
         )
     )
