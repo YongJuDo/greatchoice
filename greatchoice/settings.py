@@ -29,7 +29,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['port-0-greatchoice-1maxx2algn9knde.sel3.cloudtype.app', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['port-0-greatchoice-1maxx2algn9knde.sel3.cloudtype.app', 'localhost', '127.0.0.1', 'www.usinsa.kro.kr']
 
 
 # Application definition
