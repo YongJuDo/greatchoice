@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load custom_filters %}
 {% block body %}
+
 <div class="flex flex-row p-10">
   <!-- 제품정보 -->
   <div class="flex flex-col w-1/5 h-1/2 bg-white border border-gray-200 rounded-lg shadow mr-5 p-5">
@@ -18,11 +20,11 @@
       </a>
     {% endif %}
     <div class="flex items-center">
-      <svg aria-hidden="true" class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><title>Rating star</title><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+      <i class="fa-solid fa-star" style="color: #fad900;"></i>
       {% if average_score == None %}
-        <p class="ml-2 text-base font-bold text-gray-900">0.0</p>
+        <p class="ml-1 text-base font-bold text-gray-900">0.0</p>
       {% else %}
-        <p class="ml-2 text-base font-bold text-gray-900">{{ average_score|floatformat:2 }}</p>
+        <p class="ml-1 text-base font-bold text-gray-900">{{ average_score|floatformat:2 }}</p>
       {% endif %}
       <span class="w-1 h-1 mx-1.5 bg-gray-500 rounded-full dark:bg-gray-400"></span>
       <span href="#" class="text-base font-large text-gray-900">리뷰 {{ review_count }}</span>
@@ -42,7 +44,7 @@
               <button button type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center mr-2">+ 리뷰 쓰기</button>
             </a> 
           {% else %}
-x            <a href="{% url 'reviews:create' review.review_product_id %}">
+            <a href="{% url 'reviews:create' review.review_product_id %}">
               <button button type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center mr-2">+ 리뷰 쓰기</button>
             </a> 
           {% endif %}
@@ -53,18 +55,23 @@ x            <a href="{% url 'reviews:create' review.review_product_id %}">
       <div class="hidden p-4 bg-white rounded-lg" id="review" role="tabpanel" aria-labelledby="review-tab">
         {% if reviews %}
           {% for review in reviews %}
-          
             <article>
               <div class="flex justify-between">
-                <div class="flex items-center space-x-4">
-                  <img class="w-10 h-10 rounded-full" src="{{ user.profile_image.url }}" alt=''>
+                <div class="flex items-center space-x-3">
+                  <img class="w-10 h-10 rounded-full" src="{{ review.user.profile_image.url }}" alt=''>
                   <div class="space-y-1 font-base">
                     <p><a href="{% url 'accounts:profile' review.user.username %}">{{ review.user }}</a><span class="block text-sm text-gray-500">{{ review.created_at|date:"Y-m-d"}}</span></p>
                   </div>
                 </div>
                 <div class="flex items-center mb-1">
-                  <svg aria-hidden="true" class="w-7 h-7 text-yellow-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><title>Score</title><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
-                  <span class="text-xl">{{ review.score }}</span>
+                  {% for i in 5|star_range %}
+                    {% if review.score > i %}
+                      <i class="fa-solid fa-star" style="color: #fad900;"></i>
+                    {% else %}
+                      <i class="fa-solid fa-star" style="color: #808080;"></i>
+                    {% endif %}
+                  {% endfor %}
+                  <span class="text-xl ml-2">{{ review.score }}</span>
                 </div>
               </div>
               <a href="{% url 'reviews:review_detail' review.pk %}">
@@ -82,17 +89,13 @@ x            <a href="{% url 'reviews:create' review.review_product_id %}">
                 </div>
               </a>
               <aside>
-                <div class="flex flex-row items-center">
+                <div class="flex items-center">
                   {% if review.like_users.count >= 1 %}
-                    <svg fill="red" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" class="w-5 h-5 text-red-500">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"></path>
-                    </svg>
+                    <i class="fa-heart fa-solid" style="color: #ff0000;"></i>
                   {% else %}
-                    <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" class="w-5 h-5 text-red-500">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"></path>
-                    </svg>
+                    <i class="fa-heart fa-regular" style="color: #ff0000;"></i>
                   {% endif %}
-                  <sapn class="ml-1 mt-1 text-base text-gray-500">{{ review.like_users.count }} 명이 이 후기를 좋아합니다.</sapn>
+                  <sapn class="ml-1 text-base text-gray-500">{{ review.like_users.count }} 명이 이 후기를 좋아합니다.</sapn>
                 </div>
               </aside>
             </article>
@@ -102,42 +105,42 @@ x            <a href="{% url 'reviews:create' review.review_product_id %}">
           {% endfor %}
           
           <!-- 페이지네이션 -->
-          <ul class="pagination flex justify-center mt-6">
+          <ul class="pagination flex justify-center pagenation_container">
             {% if reviews.has_previous %}
             <li class="page-item">
-              <a class="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700" href="?page=1">처음으로</a>
+              <a class="page-link page-text" href="?page=1"><<</a>
             </li>
               <li class="page-item">
-                <a class="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700" href="?page={{ reviews.previous_page_number }}">이전</a>
+                <a class="page-link page-text" href="?page={{ reviews.previous_page_number }}"><</a>
               </li>
             {% else %}
               <li class="page-item disabled">
-                <a class="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700" tabindex="-1" aria-disabled="true" href="#">이전</a>
+                <a class="page-link page-text" tabindex="-1" aria-disabled="true" href="#"><</a>
               </li>
             {% endif %}
               
             {% for page_number in reviews.paginator.page_range %}
                 {% if page_number == reviews.number %}
                 <li class="page-item active" aria-current="page">
-                    <a class="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700" href="?page={{ page_number }}">{{ page_number }}</a>
+                    <a class="page-link page-text" href="?page={{ page_number }}">{{ page_number }}</a>
                 </li>
                 {% else %}
                 <li class="page-item">
-                    <a class="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700" href="?page={{ page_number }}">{{ page_number }}</a>
+                    <a class="page-link page-text" href="?page={{ page_number }}">{{ page_number }}</a>
                 </li>
                 {% endif %}
                 {% endfor %}
           
             {% if reviews.has_next %}
               <li class="page-item">
-                <a class="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700" href="?page={{ reviews.next_page_number }}">다음</a>
+                <a class="page-link page-text" href="?page={{ reviews.next_page_number }}">></a>
               </li>
               <li class="page-item">
-                <a class="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700" href="?page={{ reviews.paginator.num_pages }}">마지막으로</a>
+                <a class="page-link page-text" href="?page={{ reviews.paginator.num_pages }}">>></a>
               </li>
             {% else %}
               <li class="page-item disabled">
-                <a class="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700" tabindex="-1" aria-disabled="true" href="#">다음</a>
+                <a class="page-link page-text" tabindex="-1" aria-disabled="true" href="#">></a>
               </li>
             {% endif %}
           </ul>
@@ -150,8 +153,6 @@ x            <a href="{% url 'reviews:create' review.review_product_id %}">
 </div>
   
 {% endblock body %}
-
-
 
 
 <nav aria-label="Page navigation example">

@@ -1,0 +1,41 @@
+<ul class="pagination justify-content-center pagenation_container">
+  {% if page_obj.has_previous %}
+      <li class="page-item">
+          <a class="page-link page-text" href="?tab={{active_tab}}&page=1">&lt;&lt;</a>
+      </li>
+      <li class="page-item">
+          <a class="page-link page-text" href="?tab={{active_tab}}&page={{ page_obj.previous_page_number }}">&lt;</a>
+      </li>
+  {% else %}
+      <li class="page-item disabled">
+          <a class="page-link page-text" tabindex="-1" aria-disabled="true" href="#">&lt;</a>
+      </li>
+  {% endif %}
+
+  {% for page_number in page_obj.paginator.page_range %}
+      {% if page_number >= page_obj.number|add:-4 and page_number <= page_obj.number|add:4 %}
+          {% if page_number == page_obj.number %}
+              <li class="page-item active" aria-current="page">
+              <a class="page-link page-text" href="?tab={{active_tab}}&page={{ page_number }}">{{ page_number }}</a>
+              </li>
+          {% else %}
+              <li class="page-item">
+              <a class="page-link page-text" href="?tab={{active_tab}}&page={{ page_number }}">{{ page_number }}</a>
+              </li>
+          {% endif %}
+      {% endif %}
+  {% endfor %}
+
+  {% if page_obj.has_next %}
+      <li class="page-item">
+          <a class="page-link page-text" href="?tab={{active_tab}}&page={{ page_obj.next_page_number }}">&gt;</a>
+      </li>
+      <li class="page-item">
+          <a class="page-link page-text" href="?tab={{active_tab}}&page={{ page_obj.paginator.num_pages }}">&gt;&gt;</a>
+      </li>
+  {% else %}
+      <li class="page-item disabled">
+      <a class="page-link page-text" tabindex="-1" aria-disabled="true" href="#">&gt;</a>
+      </li>
+  {% endif %}
+</ul>

@@ -1,18 +1,25 @@
 {% extends 'base.html' %}
 {% block body %}
+{% load custom_filters %}
 {% load static %}
 <div class="flex justify-center p-10 ">
   <div class="w-2/3">
     <!-- 상단(사용자 이름, 프로필 사진, 리뷰 작성일) -->
     <div class="flex justify-between items-center	space-x-4">
       <div class="flex items-center">
-        <img class="w-10 h-10 rounded-full" src="https://picsum.photos/200" alt="">
+        <img class="w-10 h-10 rounded-full" src="{{ review.user.profile_image.url }}" alt="">
         <div class="ml-2">
           <p class="font-semibold">
             <a href="{% url 'accounts:profile' review.user.username %}">{{ review.user }}</a>
           </p>
           <div class="flex items-center">
-            <i class="fa-solid fa-star" style="color: #fad900;"></i>
+            {% for i in 5|star_range %}
+              {% if review.score > i %}
+                <i class="fa-solid fa-star" style="color: #fad900;"></i>
+              {% else %}
+                <i class="fa-solid fa-star" style="color: #808080;"></i>
+              {% endif %}
+            {% endfor %}
             <span class="ml-1 text-base font-semibold">{{ review.score }}</span>
           </div>
         </div>
@@ -76,19 +83,27 @@
       {% endif %}
 
       <!-- 리뷰 좋아요 기능 -->
-      <div class="flex justify-end mr-3">
-        <form id="review-like-form" data-review-id="{{ review.pk }}">
-          {% csrf_token %}
-          {% if request.user in review.like_users.all %}
-            <button type="submit">
-              <i id="heart_icon" class="fa-heart fa-solid" style="color: #ff0000;"></i>
-            </button>
+      <div class="flex items-center justify-end mr-3">
+        {% if request.user != review.user %}
+          <form id="review-like-form" data-review-id="{{ review.pk }}">
+            {% csrf_token %}
+            {% if request.user in review.like_users.all %}
+              <button type="submit">
+                <i id="heart_icon" class="fa-heart fa-solid" style="color: #ff0000;"></i>
+              </button>
+            {% else %}
+              <button type="submit">
+                <i id="heart_icon" class="fa-heart fa-regular" style="color: #ff0000;"></i>
+              </button>
+            {% endif %}
+          </form>
+        {% else %}
+          {% if review.like_users.count > 0 %}
+            <i id="heart_icon" class="fa-heart fa-solid" style="color: #ff0000;"></i>
           {% else %}
-            <button type="submit">
-              <i id="heart_icon" class="fa-heart fa-regular" style="color: #ff0000;"></i>
-            </button>
+            <i id="heart_icon" class="fa-heart fa-regular" style="color: #ff0000;"></i>
           {% endif %}
-        </form>
+        {% endif %}
         <sapn id="review_likes_count" class="ml-1 text-base text-gray-500">{{ review.like_users.count }}</sapn>
       </div>
     </div>
@@ -124,7 +139,7 @@
       {% for comment in comments %}
         <div class="grid grid-cols-8 mt-3">
           <div class="col-span-1 flex items-center">
-            <img class="w-10 h-10 rounded-full" src="https://picsum.photos/200" alt="">
+            <img class="w-10 h-10 rounded-full" src="{{ comment.user.profile_image.url }}" alt="">
             <p class="font-semibold ml-2">
               <a href="{% url 'accounts:profile' comment.user.username %}">{{ comment.user }}</a>
             </p>
@@ -132,7 +147,7 @@
           <div class="col-span-6 text-base flex items-center">
             {{ comment.content }}
           </div>
-          <div class="col-span-1 text-base flex justify-end">
+          <div class="col-span-1 text-base flex items-center justify-end">
             <!-- 댓글 삭제 기능 -->
             {% if request.user == comment.user %}
             <form action="{% url 'reviews:comment_delete' review.pk comment.pk %}" method="POST" class="mr-2">
@@ -143,19 +158,27 @@
             </form>
             {% endif %}
             <!-- 댓글 좋아요 기능 -->
-            <form action="{% url 'reviews:comment_like' review.pk comment.pk %}" method="POST">
-              {% csrf_token %}
-              {% if request.user in comment.like_users.all %}
-                <button type="submit">
-                  <i id="heart_icon" class="fa-heart fa-solid" style="color: #ff0000;"></i>
-                </button>
+            {% if request.user != comment.user %}
+              <form id="review-comment-like-form-{{ comment.pk }}" data-review-id="{{ review.pk }}" data-comment-id="{{ comment.pk }}">
+                {% csrf_token %}
+                {% if request.user in comment.like_users.all %}
+                  <button type="submit">
+                    <i id="comment_heart_icon" class="fa-heart fa-solid" style="color: #ff0000;"></i>
+                  </button>
+                {% else %}
+                  <button type="submit">
+                    <i id="comment_heart_icon" class="fa-heart fa-regular" style="color: #ff0000;"></i>
+                  </button>
+                {% endif %}
+              </form>
+            {% else %}
+              {% if comment.like_users.count > 0 %}
+                <i id="heart_icon" class="fa-heart fa-solid" style="color: #ff0000;"></i>
               {% else %}
-                <button type="submit">
-                  <i id="heart_icon" class="fa-heart fa-regular" style="color: #ff0000;"></i>
-                </button>
+                <i id="heart_icon" class="fa-heart fa-regular" style="color: #ff0000;"></i>
               {% endif %}
-            </form>
-            <span class="ml-1 text-base text-gray-500">{{ comment.like_users.count }}</span>
+            {% endif %}
+            <span id="review_comment_likes_count" class="ml-1 text-base text-gray-500">{{ comment.like_users.count }}</span>
           </div>
         </div>
       {% endfor %}
@@ -195,6 +218,39 @@
           reviewLikeCountTag.textContent = reviewLikeData
         })
     })
+
+
+    const commentLikeForms = document.querySelectorAll('[id^="review-comment-like-form-"]');
+    const r_csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+    commentLikeForms.forEach(function(commentLikeForm) {
+      commentLikeForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+        const reviewId = event.target.dataset.reviewId;
+        const commentId = event.target.dataset.commentId;
+        axios({
+          method: 'POST',
+          url: `/reviews/comment_like/${reviewId}/${commentId}/`,
+          headers: { 'X-CSRFToken': r_csrftoken }
+        })
+          .then((response) => {
+            const commentIsLiked = response.data.comment_is_liked;
+            const commentLikeBtn = event.target.querySelector('#comment_heart_icon');
+
+            if (commentIsLiked === true) {
+              commentLikeBtn.classList.add('fa-solid');
+              commentLikeBtn.classList.remove('fa-regular');
+            } else {
+              commentLikeBtn.classList.add('fa-regular');
+              commentLikeBtn.classList.remove('fa-solid');
+            }
+            
+            const reviewCommentLikeCountTag = event.target.nextElementSibling;
+            const reviewCommentLikeData = response.data.review_comment_likes_count;
+            reviewCommentLikeCountTag.textContent = reviewCommentLikeData;
+          });
+      });
+    });
   </script>
 {% endblock js %}
 

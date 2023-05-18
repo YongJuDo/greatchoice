@@ -15,7 +15,6 @@ def kakao_disconnect(request):
     if request.user.is_authenticated:
         # 사용자의 카카오 소셜 계정 연결 끊기
         SocialAccount.objects.filter(user=request.user, provider='kakao').delete() 
-        # auth_logout(request)
     # 계정 삭제 후 리다이렉트할 URL
         redirect_url = 'reviews:index'
     return redirect('reviews:index')
@@ -137,6 +136,7 @@ def delete(request):
 def follow(request, user_pk):
     User = get_user_model()
     person = User.objects.get(pk=user_pk)
+    
     if person != request.user:
         if request.user in person.followers.all():
             person.followers.remove(request.user)
@@ -153,20 +153,51 @@ def follow(request, user_pk):
     return redirect('accounts:profile', person.username)
 
 
+# def profile(request, username):
+#     User = get_user_model()
+#     person = User.objects.get(username=username)
+#     is_kakao_connected = SocialAccount.objects.filter(user=request.user, provider='kakao').exists()
+#     reviews = person.review_set.all().order_by('-created_at')
+#     review_count = len(reviews)
+#     page = request.GET.get('page', 1)
+#     paginator = Paginator(reviews, 4)  # 한 페이지에 4개씩 표시하도록 수정
+#     page_obj = paginator.get_page(page)
+#     context = {
+#         'is_kakao_connected': is_kakao_connected,
+#         'person': person,
+#         'review_count': review_count,
+#         'reviews': page_obj,
+#     }
+#     return render(request, 'accounts/profile.html', context)
+
 def profile(request, username):
     User = get_user_model()
     person = User.objects.get(username=username)
     is_kakao_connected = SocialAccount.objects.filter(user=request.user, provider='kakao').exists()
-    reviews = person.review_set.all()
-    review_count = len(reviews)
+    reviews = person.review_set.all().order_by('-created_at')
+    like_reviews = person.like_reviews.all().order_by('-created_at')
+    active_tab = request.GET.get("tab")  # 선택된 탭을 가져옴
+
+    if active_tab == "reviews":
+        content = reviews
+    elif active_tab == "like_reviews":  
+        content = like_reviews
+    else:
+        content = reviews
+
+    per_page = 4
+    paginator = Paginator(content, per_page)
     page = request.GET.get('page', 1)
-    paginator = Paginator(reviews, 4)  # 한 페이지에 4개씩 표시하도록 수정
     page_obj = paginator.get_page(page)
+
     context = {
         'is_kakao_connected': is_kakao_connected,
         'person': person,
-        'review_count': review_count,
-        'reviews': page_obj,
+        'reviews':reviews,
+        'like_reviews': like_reviews,
+        'page_obj': page_obj,
+        'active_tab': active_tab,
+        'username': username,
     }
     return render(request, 'accounts/profile.html', context)
 

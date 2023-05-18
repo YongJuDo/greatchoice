@@ -8,7 +8,8 @@ from bs4 import BeautifulSoup
 from django.db.models import Avg
 from django.core.paginator import Paginator
 from django.http import JsonResponse
-
+from django.contrib import messages
+from django.shortcuts import HttpResponseRedirect
 
 # Create your views here.
 def index_redirect(request):
@@ -21,7 +22,7 @@ def index(request):
     soup = BeautifulSoup(res.text, 'html.parser')
 
     products_ranking = []
-    for item in soup.select('.li_inner')[:10]:
+    for item in soup.select('.li_inner')[:15]:
         product = Product()
         product.data_id = item.select_one('a.img-block')['href'].split('?')[0].split('/')[-1]
         product.brand = item.select('.article_info > p > a')[0].text.strip()
@@ -146,9 +147,10 @@ def product_detail(request, data_id):
     reviews = Review.objects.filter(review_product_id=data_id).order_by('-pk')
     review_count = len(reviews)
     page = request.GET.get('page', '1')
-    paginator = Paginator(reviews, 3)
+    paginator = Paginator(reviews, 5)
     page_obj = paginator.get_page(page)
     average_score = reviews.aggregate(Avg('score'))
+    
 
     context = {
         'product_exists': product_exists,
@@ -272,6 +274,10 @@ def comment_create(request, review_pk):
             comment.review = review
             comment.save()
             return redirect('reviews:review_detail', review.pk)
+        
+        else :
+            messages.warning(request, "댓글은 빈칸으로 제출하실 수 없습니다.")
+            return redirect('reviews:review_detail', review.pk)
 
 
 @login_required
@@ -279,9 +285,15 @@ def comment_like(request, review_pk, comment_pk):
     comment = Comment.objects.get(pk=comment_pk)
     if request.user in comment.like_users.all():
         comment.like_users.remove(request.user)
+        comment_is_liked = False
     else:
         comment.like_users.add(request.user)
-    return redirect('reviews:review_detail', review_pk)
+        comment_is_liked = True
+    context = {
+        'comment_is_liked': comment_is_liked,
+        'review_comment_likes_count': comment.like_users.count(),
+    }
+    return JsonResponse(context)
 
 
 @login_required
