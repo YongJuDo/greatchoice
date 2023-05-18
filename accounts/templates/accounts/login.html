@@ -15,12 +15,12 @@
         {{ form.password }}
         <label for="floating_password" class="absolute text-gray-500 duration-300 transform -translate-y-9 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-9">비밀번호</label>
       </div>
-      <div class="mb-5 w-1/4">
+      <div class="mb-3 w-1/4">
         <button type="submit" class="w-full text-white bg-gray-800 hover:bg-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg px-5 py-2.5 text-center">로그인</button>
       </div>
     </form>
     <div class="flex flex-col items-center">
-      <a href="{% provider_login_url 'kakao' %}" class="w-1/4 mb-10 flex justify-center border-kakaoYellow bg-kakaoYellow rounded-lg">
+      <a href="{% provider_login_url 'kakao' %}" class="w-1/4 mb-10 flex justify-center rounded-lg" style="background-color:#FEE500">
         <img src="{% static 'img/kakao_login_button.png' %}" alt="카카오 로그인 이미지">
       </a>
     </div>
